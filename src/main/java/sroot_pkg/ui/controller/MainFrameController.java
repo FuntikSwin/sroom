@@ -10,14 +10,12 @@ import sroot_pkg.ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
 
 public class MainFrameController {
 
-    private IStorageRepo storageRepo;
     private MainFrameModel model = new MainFrameModel();
 
     private MainFrame mainFrame;
@@ -25,7 +23,7 @@ public class MainFrameController {
     private JTable tblDevices;
 
     public MainFrameController() {
-        storageRepo = new DbStorageRepo();
+        IStorageRepo storageRepo = new DbStorageRepo();
         try {
             model.setServerBoxes(storageRepo.getServerBoxes());
             model.setDevices(storageRepo.getDevices());
