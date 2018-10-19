@@ -165,4 +165,85 @@ public class DbStorageRepo implements IStorageRepo {
 
         closeConnection();
     }
+
+    public void addSlotInterface(int deviceSlotId, String name, Integer linkId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "insert into SlotInterface(SlotId, Name, LinkId) values(?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, deviceSlotId);
+            pstmt.setString(2, name);
+            if (linkId == null) {
+                pstmt.setNull(3, Types.INTEGER);
+            } else {
+                pstmt.setInt(3, linkId);
+            }
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        closeConnection();
+    }
+
+    @Override
+    public List<DeviceSlot> getDeviceSlots(int deviceId) throws SQLException {
+        List<DeviceSlot> data = new ArrayList<>();
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String sql = "select s.Id, s.Name, s.DeviceId from DeviceSlot s where s.DeviceId = " + Integer.toString(deviceId);
+        try (Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery(sql)) {
+            while (resultSet.next()) {
+                data.add(new DeviceSlot(
+                        resultSet.getInt("Id")
+                        , resultSet.getString("Name")
+                        , resultSet.getInt("DeviceId")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        closeConnection();
+        return data;
+    }
+
+    @Override
+    public void addDeviceSlot(String name, int deviceId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "insert into DeviceSlot(Name, DeviceId) values(?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, deviceId);
+
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
 }

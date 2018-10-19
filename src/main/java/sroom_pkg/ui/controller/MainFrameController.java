@@ -6,16 +6,12 @@ import sroom_pkg.domain.model.ComboBoxItem;
 import sroom_pkg.domain.model.Device;
 import sroom_pkg.domain.model.ServerBox;
 import sroom_pkg.domain.model.SlotInterface;
-import sroom_pkg.ui.view.AddSlotInterfaceDialog;
+import sroom_pkg.ui.model.AddSlotInterfaceModel;
 import sroom_pkg.ui.view.MainFrame;
-import sroom_pkg.ui.view.TestDlg;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,14 +103,24 @@ public class MainFrameController {
         addInterfaceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                /*TestDlg dlg = new TestDlg(mainFrame);
-                dlg.pack();
-                dlg.setLocationRelativeTo(mainFrame);
-                dlg.setVisible(true);*/
-                AddSlotInterfaceDialog dlg = new AddSlotInterfaceDialog();
-                dlg.pack();
-                dlg.setLocationRelativeTo(mainFrame);
-                dlg.setVisible(true);
+                AddSlotInterfaceModel dlgModel = new AddSlotInterfaceModel();
+                try {
+                    int deviceId = getSelectedDeviceId();
+                    dlgModel.setDeviceSlots(storageRepo.getDeviceSlots(deviceId));
+                    dlgModel.setName("");
+                    dlgModel.setSelectedDeviceId(deviceId);
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    return;
+                }
+                AddSlotInterfaceController dlg = new AddSlotInterfaceController(mainFrame, dlgModel);
+                dlg.getDialog().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        updateSlotInterfacesTable();
+                    }
+                });
+                dlg.show();
             }
         });
     }

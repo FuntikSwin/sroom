@@ -27,12 +27,14 @@ public class MainFrame extends JFrame {
         tblModel.addColumn("Num");
         tblModel.addColumn("Name");
         tblDevices.setModel(tblModel);
+        tblDevices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         tblModel = new DefaultTableModel();
         tblModel.addColumn("InterfaceId");
         tblModel.addColumn("Slot");
         tblModel.addColumn("Name");
         tblInterfaces.setModel(tblModel);
+        tblInterfaces.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
