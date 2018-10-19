@@ -18,6 +18,7 @@ public class MainFrame extends JFrame {
         setSize(500, 500);
 
         DefaultTableModel tblModel = new DefaultTableModel();
+        tblModel.addColumn("DeviceId");
         tblModel.addColumn("ServerBox");
         tblModel.addColumn("Num");
         tblModel.addColumn("Name");
@@ -38,5 +39,9 @@ public class MainFrame extends JFrame {
 
     public JTable getTblDevices() {
         return tblDevices;
+    }
+
+    public JTable getTblInterfaces() {
+        return tblInterfaces;
     }
 }

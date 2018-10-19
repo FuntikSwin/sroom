@@ -2,6 +2,7 @@ package sroom_pkg.domain.abstr;
 
 import sroom_pkg.domain.model.Device;
 import sroom_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.model.SlotInterface;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -9,5 +10,7 @@ import java.util.List;
 public interface IStorageRepo {
 
     List<ServerBox> getServerBoxes() throws SQLException;
-    List<Device> getDevices();
+    List<Device> getDevices() throws SQLException;
+    List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException;
+
 }

@@ -2,7 +2,9 @@ package sroom_pkg.domain.concrete;
 
 import sroom_pkg.domain.abstr.IStorageRepo;
 import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.DeviceSlot;
 import sroom_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.model.SlotInterface;
 
 import java.io.File;
 import java.sql.*;
@@ -62,7 +64,7 @@ public class DbStorageRepo implements IStorageRepo {
         return data;
     }
 
-    public List<Device> getDevices() {
+    public List<Device> getDevices() throws SQLException {
         List<Device> data = new ArrayList<>();
 
         try {
@@ -79,7 +81,6 @@ public class DbStorageRepo implements IStorageRepo {
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(sql)) {
             while (resultSet.next()) {
-                Integer tmp = resultSet.getInt("ServerBoxId");
                 Device item = new Device(resultSet.getInt("Id")
                         , resultSet.getString("Name")
                         , resultSet.getInt("Num")
@@ -94,6 +95,50 @@ public class DbStorageRepo implements IStorageRepo {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        closeConnection();
+
+        return data;
+    }
+
+    public List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException {
+        List<SlotInterface> data = new ArrayList<>();
+
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId " +
+                "from SlotInterface i " +
+                "left join DeviceSlot s ON s.Id = i.SlotId " +
+                "where s.DeviceId = " + Integer.toString(deviceId);
+        try (Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery(sql)) {
+            while (resultSet.next()) {
+                SlotInterface item = new SlotInterface(
+                        resultSet.getInt("Id")
+                        , resultSet.getInt("SlotId")
+                        , resultSet.getString("Name")
+                        , resultSet.getInt("LinkId"));
+                if (item.getSlotId() != null) {
+                    item.setDeviceSlot(new DeviceSlot(
+                            item.getSlotId()
+                            , resultSet.getString("SlotName")
+                            , resultSet.getInt("DeviceId")));
+                }
+                data.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        closeConnection();
 
         return data;
     }
