@@ -7,6 +7,8 @@ public class TestDlg extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
+    private JComboBox cbDeviceSlot;
+    private JTextField tfInterfaceName;
 
     public TestDlg(JFrame parent) {
         setContentPane(contentPane);

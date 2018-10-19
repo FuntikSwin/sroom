@@ -7,6 +7,8 @@ public class AddSlotInterfaceDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
+    private JTextField tfInterfaceName;
+    private JComboBox cbDeviceSlot;
 
     public AddSlotInterfaceDialog() {
         setContentPane(contentPane);
