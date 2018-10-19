@@ -52,4 +52,8 @@ public class MainFrame extends JFrame {
     public JButton getRemoveInterfaceButton() {
         return removeInterfaceButton;
     }
+
+    public JButton getAddInterfaceButton() {
+        return addInterfaceButton;
+    }
 }

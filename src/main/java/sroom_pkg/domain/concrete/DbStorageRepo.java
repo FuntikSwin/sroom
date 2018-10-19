@@ -145,4 +145,24 @@ public class DbStorageRepo implements IStorageRepo {
 
         return data;
     }
+
+    public void removeSlotInterface(int slotInterfaceId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "delete from SlotInterface where Id = " + Integer.toString(slotInterfaceId);
+
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
 }
