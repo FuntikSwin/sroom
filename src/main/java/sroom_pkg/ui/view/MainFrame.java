@@ -15,10 +15,10 @@ public class MainFrame extends JFrame {
     private JButton linkButton;
 
     public MainFrame() {
-        pack();
+        //pack();
         setContentPane(mainPanel);
 
-        setSize(500, 500);
+        //setSize(500, 500);
 
         DefaultTableModel tblModel = new DefaultTableModel();
         tblModel.addColumn("DeviceId");

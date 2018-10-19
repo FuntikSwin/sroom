@@ -6,6 +6,7 @@ import sroom_pkg.domain.model.ComboBoxItem;
 import sroom_pkg.domain.model.Device;
 import sroom_pkg.domain.model.ServerBox;
 import sroom_pkg.domain.model.SlotInterface;
+import sroom_pkg.ui.view.AddSlotInterfaceDialog;
 import sroom_pkg.ui.view.MainFrame;
 import sroom_pkg.ui.view.TestDlg;
 
@@ -36,6 +37,10 @@ public class MainFrameController {
     }
 
     public void show() {
+        mainFrame.pack();
+        mainFrame.setSize(500, 500);
+        //mainFrame.setLocationByPlatform(true);
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
 
@@ -102,7 +107,11 @@ public class MainFrameController {
         addInterfaceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                TestDlg dlg = new TestDlg(mainFrame);
+                /*TestDlg dlg = new TestDlg(mainFrame);
+                dlg.pack();
+                dlg.setLocationRelativeTo(mainFrame);
+                dlg.setVisible(true);*/
+                AddSlotInterfaceDialog dlg = new AddSlotInterfaceDialog();
                 dlg.pack();
                 dlg.setLocationRelativeTo(mainFrame);
                 dlg.setVisible(true);
