@@ -6,8 +6,8 @@ import sroom_pkg.domain.model.ComboBoxItem;
 import sroom_pkg.domain.model.Device;
 import sroom_pkg.domain.model.ServerBox;
 import sroom_pkg.domain.model.SlotInterface;
-import sroom_pkg.ui.model.MainFrameModel;
 import sroom_pkg.ui.view.MainFrame;
+import sroom_pkg.ui.view.TestDlg;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +22,6 @@ import java.util.List;
 public class MainFrameController {
 
     private final IStorageRepo storageRepo = new DbStorageRepo();
-    private MainFrameModel model = new MainFrameModel();
 
     private MainFrame mainFrame;
     private JComboBox cbServerBoxes;
@@ -32,13 +31,6 @@ public class MainFrameController {
     private JButton addInterfaceButton;
 
     public MainFrameController() {
-        try {
-            model.setServerBoxes(storageRepo.getServerBoxes());
-            model.setDevices(storageRepo.getDevices(0));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         initComponent();
         initListeners();
     }
@@ -52,21 +44,18 @@ public class MainFrameController {
 
         cbServerBoxes = mainFrame.getCbServerBoxes();
         cbServerBoxes.addItem(new ServerBox(0, "Все"));
-        if (model != null && model.getServerBoxes() != null) {
-            for (ServerBox item: model.getServerBoxes()) {
+        try {
+            List<ServerBox> serverBoxes = storageRepo.getServerBoxes();
+            for (ServerBox item: serverBoxes) {
                 cbServerBoxes.addItem(item);
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
         tblDevices = mainFrame.getTblDevices();
-        if (model != null && model.getDevices() != null) {
-            DefaultTableModel tableModel = (DefaultTableModel) tblDevices.getModel();
-            for (Device item: model.getDevices()) {
-                tableModel.addRow(new Object[] {item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName()});
-            }
-        }
-
         tblInterfaces = mainFrame.getTblInterfaces();
+        updateDevicesTable();
 
         removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
         addInterfaceButton = mainFrame.getAddInterfaceButton();
@@ -113,7 +102,10 @@ public class MainFrameController {
         addInterfaceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
+                TestDlg dlg = new TestDlg(mainFrame);
+                dlg.pack();
+                dlg.setLocationRelativeTo(mainFrame);
+                dlg.setVisible(true);
             }
         });
     }
