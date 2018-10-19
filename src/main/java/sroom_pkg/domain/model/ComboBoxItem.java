@@ -1,4 +1,4 @@
-package sroot_pkg.domain.model;
+package sroom_pkg.domain.model;
 
 public abstract class ComboBoxItem {
 

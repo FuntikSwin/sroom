@@ -1,7 +1,7 @@
-package sroot_pkg.domain.abstr;
+package sroom_pkg.domain.abstr;
 
-import sroot_pkg.domain.model.Device;
-import sroot_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.ServerBox;
 
 import java.sql.SQLException;
 import java.util.List;

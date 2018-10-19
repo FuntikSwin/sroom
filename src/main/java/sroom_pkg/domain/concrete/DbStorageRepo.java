@@ -1,9 +1,10 @@
-package sroot_pkg.domain.concrete;
+package sroom_pkg.domain.concrete;
 
-import sroot_pkg.domain.abstr.IStorageRepo;
-import sroot_pkg.domain.model.Device;
-import sroot_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.abstr.IStorageRepo;
+import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.ServerBox;
 
+import java.io.File;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +12,15 @@ import java.util.List;
 public class DbStorageRepo implements IStorageRepo {
 
     private final String driverName = "org.sqlite.JDBC";
-    private final String connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
+    //private final String connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
+    private final String connStr;
     private Connection connection;
 
     public DbStorageRepo() {
         connection = null;
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(classLoader.getResource("sroom_db").getFile());
+        connStr = "jdbc:sqlite:" + file.getAbsolutePath();
     }
 
     private void openConnection() throws ClassNotFoundException, SQLException {

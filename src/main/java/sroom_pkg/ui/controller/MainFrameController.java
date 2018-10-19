@@ -1,12 +1,12 @@
-package sroot_pkg.ui.controller;
+package sroom_pkg.ui.controller;
 
-import sroot_pkg.domain.abstr.IStorageRepo;
-import sroot_pkg.domain.concrete.DbStorageRepo;
-import sroot_pkg.domain.model.ComboBoxItem;
-import sroot_pkg.domain.model.Device;
-import sroot_pkg.domain.model.ServerBox;
-import sroot_pkg.ui.model.MainFrameModel;
-import sroot_pkg.ui.view.MainFrame;
+import sroom_pkg.domain.abstr.IStorageRepo;
+import sroom_pkg.domain.concrete.DbStorageRepo;
+import sroom_pkg.domain.model.ComboBoxItem;
+import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.ServerBox;
+import sroom_pkg.ui.model.MainFrameModel;
+import sroom_pkg.ui.view.MainFrame;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;

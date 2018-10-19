@@ -1,8 +1,8 @@
-package sroot_pkg.domain.concrete;
+package sroom_pkg.domain.concrete;
 
-import sroot_pkg.domain.abstr.IStorageRepo;
-import sroot_pkg.domain.model.Device;
-import sroot_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.abstr.IStorageRepo;
+import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.ServerBox;
 
 import java.util.List;
 

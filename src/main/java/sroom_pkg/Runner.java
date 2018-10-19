@@ -1,6 +1,6 @@
-package sroot_pkg;
+package sroom_pkg;
 
-import sroot_pkg.ui.controller.MainFrameController;
+import sroom_pkg.ui.controller.MainFrameController;
 
 public class Runner {
 

@@ -1,7 +1,7 @@
-package sroot_pkg.ui.model;
+package sroom_pkg.ui.model;
 
-import sroot_pkg.domain.model.Device;
-import sroot_pkg.domain.model.ServerBox;
+import sroom_pkg.domain.model.Device;
+import sroom_pkg.domain.model.ServerBox;
 
 import java.util.List;
 

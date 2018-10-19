@@ -1,4 +1,4 @@
-package sroot_pkg.ui.view;
+package sroom_pkg.ui.view;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
