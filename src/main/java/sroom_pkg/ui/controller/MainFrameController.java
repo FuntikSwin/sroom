@@ -27,11 +27,12 @@ public class MainFrameController {
     private JComboBox cbServerBoxes;
     private JTable tblDevices;
     private JTable tblInterfaces;
+    private JButton removeInterfaceButton;
 
     public MainFrameController() {
         try {
             model.setServerBoxes(storageRepo.getServerBoxes());
-            model.setDevices(storageRepo.getDevices());
+            model.setDevices(storageRepo.getDevices(0));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,38 +43,6 @@ public class MainFrameController {
 
     public void show() {
         mainFrame.setVisible(true);
-    }
-
-    private void initListeners() {
-        cbServerBoxes.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                ComboBoxItem item = (ComboBoxItem) cbServerBoxes.getSelectedItem();
-                JOptionPane.showMessageDialog(null, item.getKey());
-            }
-        });
-
-        tblDevices.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                DefaultTableModel tableModel = (DefaultTableModel) tblInterfaces.getModel();
-                for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
-                    tableModel.removeRow(i);
-                }
-
-                int i = tblDevices.getSelectedRow();
-                int deviceId = (Integer) tblDevices.getModel().getValueAt(i, 0);
-                try {
-                    List<SlotInterface> data = storageRepo.getSlotInterfaces(deviceId);
-                    for (SlotInterface item: data) {
-                        tableModel.addRow(new Object[] {item.getDeviceSlot().getName(), item.getName()});
-                    }
-                } catch (SQLException e1) {
-                    e1.printStackTrace();
-                }
-                super.mouseClicked(e);
-            }
-        });
     }
 
     private void initComponent() {
@@ -96,5 +65,67 @@ public class MainFrameController {
         }
 
         tblInterfaces = mainFrame.getTblInterfaces();
+
+        removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
     }
+
+    private void initListeners() {
+        cbServerBoxes.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ComboBoxItem cbItem = (ComboBoxItem) cbServerBoxes.getSelectedItem();
+                //JOptionPane.showMessageDialog(null, item.getKey() + "; " + item.getValue());
+
+                DefaultTableModel tableModel = (DefaultTableModel) tblInterfaces.getModel();
+                for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+                    tableModel.removeRow(i);
+                }
+                tableModel = (DefaultTableModel) tblDevices.getModel();
+                for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+                    tableModel.removeRow(i);
+                }
+
+                try {
+                    List<Device> data = storageRepo.getDevices(Integer.parseInt(cbItem.getKey()));
+                    for (Device item: data) {
+                        tableModel.addRow(new Object[] {item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName()});
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+            }
+        });
+
+        tblDevices.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                DefaultTableModel tableModel = (DefaultTableModel) tblInterfaces.getModel();
+                for (int i = tableModel.getRowCount() - 1; i >= 0; i--) {
+                    tableModel.removeRow(i);
+                }
+
+                int i = tblDevices.getSelectedRow();
+                int deviceId = (Integer) tblDevices.getModel().getValueAt(i, 0);
+                try {
+                    List<SlotInterface> data = storageRepo.getSlotInterfaces(deviceId);
+                    for (SlotInterface item: data) {
+                        tableModel.addRow(new Object[] {item.getId(), item.getDeviceSlot().getName(), item.getName()});
+                    }
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
+                super.mouseClicked(e);
+            }
+        });
+
+        removeInterfaceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int i = tblInterfaces.getSelectedRow();
+                int interfaceId = (int) tblInterfaces.getModel().getValueAt(i, 0);
+                JOptionPane.showMessageDialog(null, "InterfaceId: " + Integer.toString(interfaceId));
+            }
+        });
+    }
+
 }

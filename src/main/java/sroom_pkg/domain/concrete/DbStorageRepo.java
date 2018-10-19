@@ -64,7 +64,7 @@ public class DbStorageRepo implements IStorageRepo {
         return data;
     }
 
-    public List<Device> getDevices() throws SQLException {
+    public List<Device> getDevices(int serverBoxId) throws SQLException {
         List<Device> data = new ArrayList<>();
 
         try {
@@ -77,7 +77,10 @@ public class DbStorageRepo implements IStorageRepo {
             return null;
         }
 
-        String sql = "select d.Id, d.Name, d.Num, d.Size, d.ServerBoxId, sb.Name ServerBoxName from Device d left join ServerBox sb ON sb.Id = d.ServerBoxId";
+        String sql = "select d.Id, d.Name, d.Num, d.Size, d.ServerBoxId, sb.Name ServerBoxName " +
+                "from Device d " +
+                "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
+                "where d.ServerBoxId = case when " + Integer.toString(serverBoxId) + " = 0 then d.ServerBoxId else " + Integer.toString(serverBoxId) + " end";
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(sql)) {
             while (resultSet.next()) {

@@ -10,6 +10,9 @@ public class MainFrame extends JFrame {
     private JTable tblInterfaces;
     private JButton addInterfaceButton;
     private JComboBox cbServerBoxes;
+    private JButton removeDeviceButton;
+    private JButton removeInterfaceButton;
+    private JButton linkButton;
 
     public MainFrame() {
         pack();
@@ -25,6 +28,7 @@ public class MainFrame extends JFrame {
         tblDevices.setModel(tblModel);
 
         tblModel = new DefaultTableModel();
+        tblModel.addColumn("InterfaceId");
         tblModel.addColumn("Slot");
         tblModel.addColumn("Name");
         tblInterfaces.setModel(tblModel);
@@ -43,5 +47,9 @@ public class MainFrame extends JFrame {
 
     public JTable getTblInterfaces() {
         return tblInterfaces;
+    }
+
+    public JButton getRemoveInterfaceButton() {
+        return removeInterfaceButton;
     }
 }

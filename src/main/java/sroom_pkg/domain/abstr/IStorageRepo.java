@@ -10,7 +10,7 @@ import java.util.List;
 public interface IStorageRepo {
 
     List<ServerBox> getServerBoxes() throws SQLException;
-    List<Device> getDevices() throws SQLException;
+    List<Device> getDevices(int serverBoxId) throws SQLException;
     List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException;
 
 }
