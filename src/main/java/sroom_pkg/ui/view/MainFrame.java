@@ -17,6 +17,7 @@ public class MainFrame extends JFrame {
     public MainFrame() {
         //pack();
         setContentPane(mainPanel);
+        setTitle("Server room");
 
         //setSize(500, 500);
 
