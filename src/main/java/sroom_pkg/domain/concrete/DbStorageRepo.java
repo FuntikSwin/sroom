@@ -104,6 +104,28 @@ public class DbStorageRepo implements IStorageRepo {
         return data;
     }
 
+    @Override
+    public void removeDevice(int deviceId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "delete from SlotInterface " +
+                "where SlotId in ( " +
+                "select s.Id " +
+                "from DeviceSlot s " +
+                "where s.DeviceId = " + Integer.toString(deviceId) +
+                ")";
+
+        closeConnection();
+    }
+
     public List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException {
         List<SlotInterface> data = new ArrayList<>();
 

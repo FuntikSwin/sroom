@@ -13,6 +13,7 @@ public interface IStorageRepo {
     List<ServerBox> getServerBoxes() throws SQLException;
 
     List<Device> getDevices(int serverBoxId) throws SQLException;
+    void removeDevice(int deviceId) throws SQLException;
 
     List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException;
     void removeSlotInterface(int slotInterfaceId) throws SQLException;

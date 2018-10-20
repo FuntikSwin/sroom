@@ -26,6 +26,7 @@ public class MainFrameController {
     private JTable tblInterfaces;
     private JButton removeInterfaceButton;
     private JButton addInterfaceButton;
+    private JButton removeDeviceButton;
 
     public MainFrameController() {
         initComponent();
@@ -47,7 +48,7 @@ public class MainFrameController {
         cbServerBoxes.addItem(new ServerBox(0, "Все"));
         try {
             List<ServerBox> serverBoxes = storageRepo.getServerBoxes();
-            for (ServerBox item: serverBoxes) {
+            for (ServerBox item : serverBoxes) {
                 cbServerBoxes.addItem(item);
             }
         } catch (SQLException e) {
@@ -60,6 +61,7 @@ public class MainFrameController {
 
         removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
         addInterfaceButton = mainFrame.getAddInterfaceButton();
+        removeDeviceButton = mainFrame.getRemoveDeviceButton();
     }
 
     private void initListeners() {
@@ -123,6 +125,30 @@ public class MainFrameController {
                 dlg.show();
             }
         });
+
+        removeDeviceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                List<SlotInterface> slotInterfaces = new ArrayList<>();
+                try {
+                    slotInterfaces = storageRepo.getSlotInterfaces(getSelectedDeviceId());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    return;
+                }
+                if (slotInterfaces.size() > 0) {
+                    int input = JOptionPane.showConfirmDialog(
+                            null
+                            , "У устройства найдены интерфейсы! Удалить устройство и интерфейсы?"
+                            , "Select"
+                            , JOptionPane.YES_NO_OPTION
+                            , JOptionPane.WARNING_MESSAGE);
+                    if (input == JOptionPane.YES_OPTION) {
+                        JOptionPane.showMessageDialog(null, "Press OK");
+                    }
+                }
+            }
+        });
     }
 
     private int getSelectedServerBoxId() {
@@ -152,8 +178,8 @@ public class MainFrameController {
             e.printStackTrace();
         }
 
-        for (Device item: data) {
-            tableModel.addRow(new Object[] {item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName()});
+        for (Device item : data) {
+            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName()});
         }
 
         tableModel = (DefaultTableModel) tblInterfaces.getModel();
@@ -176,8 +202,8 @@ public class MainFrameController {
             return;
         }
 
-        for (SlotInterface item: data) {
-            tableModel.addRow(new Object[] {item.getId(), item.getDeviceSlot().getName(), item.getName()});
+        for (SlotInterface item : data) {
+            tableModel.addRow(new Object[]{item.getId(), item.getDeviceSlot().getName(), item.getName()});
         }
     }
 
