@@ -18,8 +18,8 @@ public class DbStorageRepo implements IStorageRepo {
         connection = null;
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("sroom_db").getFile());
-        //connStr = "jdbc:sqlite:" + file.getAbsolutePath();
-        connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
+        connStr = "jdbc:sqlite:" + file.getAbsolutePath();
+        //connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
     }
 
     private void openConnection() throws ClassNotFoundException, SQLException {
