@@ -1,10 +1,7 @@
 package sroom_pkg.domain.concrete;
 
 import sroom_pkg.domain.abstr.IStorageRepo;
-import sroom_pkg.domain.model.Device;
-import sroom_pkg.domain.model.DeviceSlot;
-import sroom_pkg.domain.model.ServerBox;
-import sroom_pkg.domain.model.SlotInterface;
+import sroom_pkg.domain.model.*;
 
 import java.io.File;
 import java.sql.*;
@@ -218,9 +215,11 @@ public class DbStorageRepo implements IStorageRepo {
             return null;
         }
 
-        String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId " +
+        String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName " +
                 "from SlotInterface i " +
                 "left join DeviceSlot s ON s.Id = i.SlotId " +
+                "left join Device d ON d.Id = s.DeviceId " +
+                "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
                 "where s.DeviceId = " + Integer.toString(deviceId);
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(sql)) {
@@ -231,10 +230,29 @@ public class DbStorageRepo implements IStorageRepo {
                         , resultSet.getString("Name")
                         , resultSet.getInt("LinkId"));
                 if (item.getSlotId() != null) {
-                    item.setDeviceSlot(new DeviceSlot(
+                    DeviceSlot itemSlot = new DeviceSlot(
                             item.getSlotId()
                             , resultSet.getString("SlotName")
-                            , resultSet.getInt("DeviceId")));
+                            , resultSet.getInt("DeviceId"));
+                    if (itemSlot.getDeviceId() != null) {
+                        Device itemDevice = new Device(
+                                itemSlot.getDeviceId()
+                                , resultSet.getString("DeviceName")
+                                , resultSet.getInt("DeviceNum")
+                                , 0
+                                , resultSet.getInt("ServerBoxId")
+                                , "");
+                        if (itemDevice.getServerBoxId() != null) {
+                            ServerBox itemBox = new ServerBox(
+                                    itemDevice.getServerBoxId()
+                                    , resultSet.getString("ServerBoxName"));
+                            itemDevice.setServerBox(itemBox);
+                        }
+
+                        itemSlot.setDevice(itemDevice);
+                    }
+
+                    item.setDeviceSlot(itemSlot);
                 }
                 data.add(item);
             }
@@ -368,5 +386,30 @@ public class DbStorageRepo implements IStorageRepo {
         }
 
         closeConnection();
+    }
+
+    @Override
+    public List<InterfaceType> getInterfaceTypes() throws SQLException {
+        List<InterfaceType> data = new ArrayList<>();
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        String sql = "select t.Id, t.Name from InterfaceType t";
+        try (Statement stmt = connection.createStatement();
+             ResultSet resultSet = stmt.executeQuery(sql)) {
+            while (resultSet.next()) {
+                data.add(new InterfaceType(resultSet.getInt("Id"), resultSet.getString("Name")));
+            }
+        }
+
+        closeConnection();
+        return data;
     }
 }

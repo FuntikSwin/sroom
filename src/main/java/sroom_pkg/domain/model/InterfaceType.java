@@ -1,16 +1,13 @@
 package sroom_pkg.domain.model;
 
-public class DeviceSlot extends ComboBoxItem {
+public class InterfaceType extends ComboBoxItem {
 
     private int id;
     private String name;
-    private Integer deviceId;
-    private Device device;
 
-    public DeviceSlot(int id, String name, Integer deviceId) {
+    public InterfaceType(int id, String name) {
         this.id = id;
         this.name = name;
-        this.deviceId = deviceId;
     }
 
     public int getId() {
@@ -27,22 +24,6 @@ public class DeviceSlot extends ComboBoxItem {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public Integer getDeviceId() {
-        return deviceId;
-    }
-
-    public void setDeviceId(Integer deviceId) {
-        this.deviceId = deviceId;
-    }
-
-    public Device getDevice() {
-        return device;
-    }
-
-    public void setDevice(Device device) {
-        this.device = device;
     }
 
     @Override

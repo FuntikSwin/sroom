@@ -1,9 +1,6 @@
 package sroom_pkg.domain.abstr;
 
-import sroom_pkg.domain.model.Device;
-import sroom_pkg.domain.model.DeviceSlot;
-import sroom_pkg.domain.model.ServerBox;
-import sroom_pkg.domain.model.SlotInterface;
+import sroom_pkg.domain.model.*;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -24,4 +21,6 @@ public interface IStorageRepo {
     List<DeviceSlot> getDeviceSlots(int deviceId) throws SQLException;
     void addDeviceSlot(String name, int deviceId) throws SQLException;
     void updateDeviceSlot(int deviceSlotId, String name) throws SQLException;
+
+    List<InterfaceType> getInterfaceTypes() throws SQLException;
 }

@@ -1,6 +1,6 @@
 package sroom_pkg.domain.model;
 
-public class SlotInterface {
+public class SlotInterface extends ComboBoxItem {
 
     private int id;
     private Integer slotId;
@@ -54,5 +54,20 @@ public class SlotInterface {
 
     public void setDeviceSlot(DeviceSlot deviceSlot) {
         this.deviceSlot = deviceSlot;
+    }
+
+    @Override
+    public String getKey() {
+        return Integer.toString(id);
+    }
+
+    @Override
+    public String getValue() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

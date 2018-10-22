@@ -8,6 +8,8 @@ import sroom_pkg.domain.model.ServerBox;
 import sroom_pkg.domain.model.SlotInterface;
 import sroom_pkg.ui.model.AddDeviceModel;
 import sroom_pkg.ui.model.AddSlotInterfaceModel;
+import sroom_pkg.ui.model.LinkModel;
+import sroom_pkg.ui.view.LinkDialog;
 import sroom_pkg.ui.view.MainFrame;
 
 import javax.swing.*;
@@ -29,6 +31,7 @@ public class MainFrameController {
     private JButton addInterfaceButton;
     private JButton removeDeviceButton;
     private JButton addDeviceButton;
+    private JButton linkButton;
 
     public MainFrameController() {
         initComponent();
@@ -65,6 +68,7 @@ public class MainFrameController {
         addInterfaceButton = mainFrame.getAddInterfaceButton();
         removeDeviceButton = mainFrame.getRemoveDeviceButton();
         addDeviceButton = mainFrame.getAddDeviceButton();
+        linkButton = mainFrame.getLinkButton();
     }
 
     private void initListeners() {
@@ -180,6 +184,43 @@ public class MainFrameController {
                 dlgController.show();
             }
         });
+
+        linkButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int interfaceId;
+                try {
+                    interfaceId = getSelectedSlotInterfaceId();
+                } catch (Exception e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                LinkModel dlgModel = new LinkModel();
+                List<SlotInterface> slotInterfaces = new ArrayList<>();
+                try {
+                    slotInterfaces = storageRepo.getSlotInterfaces(getSelectedDeviceId());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                    return;
+                }
+
+                for (SlotInterface item: slotInterfaces) {
+                    if (item.getId() == interfaceId) {
+                        dlgModel.setSlotInterface(item);
+                    }
+                }
+
+                LinkController dlgController = new LinkController(mainFrame, dlgModel);
+                dlgController.getDialog().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        updateSlotInterfacesTable();
+                    }
+                });
+                dlgController.show();
+            }
+        });
     }
 
     private int getSelectedServerBoxId() {
@@ -194,6 +235,15 @@ public class MainFrameController {
         }
 
         return (int) tblDevices.getModel().getValueAt(row, 0);
+    }
+
+    private int getSelectedSlotInterfaceId() throws Exception {
+        int row = tblInterfaces.getSelectedRow();
+        if (row == -1) {
+            throw new Exception("Не выбран интерфейс");
+        }
+
+        return (int) tblInterfaces.getModel().getValueAt(row, 0);
     }
 
     private void updateDevicesTable() {
