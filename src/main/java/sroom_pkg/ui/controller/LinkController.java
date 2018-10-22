@@ -28,6 +28,7 @@ public class LinkController {
     private JComboBox cbDeviceSlots;
     private JComboBox cbSlotInterfaces;
     private JComboBox cbInterfaceType;
+    private JButton buttonOK;
 
     public LinkController(MainFrame parent, LinkModel model) {
         this.parent = parent;
@@ -70,6 +71,8 @@ public class LinkController {
         for (InterfaceType item: interfaceTypes) {
             cbInterfaceType.addItem(item);
         }
+
+        buttonOK = dialog.getButtonOK();
     }
 
     private void updateServerBoxes() {
@@ -192,6 +195,24 @@ public class LinkController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 updateSlotInterfaces();
+            }
+        });
+
+        buttonOK.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
+                if (cbSlotInterfaces.getSelectedItem() == null) {
+                    return;
+                }
+                String targetIdStr = ((ComboBoxItem) cbSlotInterfaces.getSelectedItem()).getKey();
+                String intTypeIdStr = ((ComboBoxItem) cbInterfaceType.getSelectedItem()).getKey();
+
+                try {
+                    storageRepo.addLink(model.getSlotInterface().getId(), Integer.parseInt(targetIdStr), Integer.parseInt(intTypeIdStr));
+                } catch (SQLException e1) {
+                    e1.printStackTrace();
+                }
             }
         });
     }

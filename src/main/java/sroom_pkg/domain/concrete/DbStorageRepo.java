@@ -11,7 +11,6 @@ import java.util.List;
 public class DbStorageRepo implements IStorageRepo {
 
     private final String driverName = "org.sqlite.JDBC";
-    //private final String connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
     private final String connStr;
     private Connection connection;
 
@@ -19,7 +18,8 @@ public class DbStorageRepo implements IStorageRepo {
         connection = null;
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("sroom_db").getFile());
-        connStr = "jdbc:sqlite:" + file.getAbsolutePath();
+        //connStr = "jdbc:sqlite:" + file.getAbsolutePath();
+        connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
     }
 
     private void openConnection() throws ClassNotFoundException, SQLException {
@@ -411,5 +411,49 @@ public class DbStorageRepo implements IStorageRepo {
 
         closeConnection();
         return data;
+    }
+
+    @Override
+    public void addLink(int sourceSlotInterfaceId, int targetInterfaceId, int interfaceTypeId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        int linkId = 0;
+        String sql = "insert into Link(InterfaceTypeId) values(?)";
+        try(PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setInt(1, interfaceTypeId);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet idents = pstmt.getGeneratedKeys()) {
+                    if (idents.next()) {
+                        linkId = idents.getInt(1);
+                    }
+                }
+            }
+        }
+
+        if (linkId > 0) {
+            sql = "update SlotInterface set LinkId = ? where Id = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setInt(1, linkId);
+                pstmt.setInt(2, sourceSlotInterfaceId);
+                pstmt.executeUpdate();
+            }
+            sql = "update SlotInterface set LinkId = ? where Id = ?";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setInt(1, linkId);
+                pstmt.setInt(2, targetInterfaceId);
+                pstmt.executeUpdate();
+            }
+        }
+
+        closeConnection();
     }
 }

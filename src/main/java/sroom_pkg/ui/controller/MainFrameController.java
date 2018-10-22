@@ -284,7 +284,11 @@ public class MainFrameController {
         }
 
         for (SlotInterface item : data) {
-            tableModel.addRow(new Object[]{item.getId(), item.getDeviceSlot().getName(), item.getName()});
+            String linkId = "";
+            if (item.getLinkId() != null && item.getLinkId() > 0) {
+                linkId = Integer.toString(item.getLinkId());
+            }
+            tableModel.addRow(new Object[]{item.getId(), item.getDeviceSlot().getName(), item.getName(), linkId});
         }
     }
 

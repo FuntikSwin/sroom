@@ -23,4 +23,6 @@ public interface IStorageRepo {
     void updateDeviceSlot(int deviceSlotId, String name) throws SQLException;
 
     List<InterfaceType> getInterfaceTypes() throws SQLException;
+
+    void addLink(int sourceSlotInterfaceId, int targetInterfaceId, int interfaceTypeId) throws SQLException;
 }

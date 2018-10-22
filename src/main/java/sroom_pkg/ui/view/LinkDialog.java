@@ -66,4 +66,8 @@ public class LinkDialog extends JDialog {
     public JComboBox getCbInterfaceType() {
         return cbInterfaceType;
     }
+
+    public JButton getButtonOK() {
+        return buttonOK;
+    }
 }
