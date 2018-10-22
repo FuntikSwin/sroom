@@ -10,13 +10,15 @@ public interface IStorageRepo {
     List<ServerBox> getServerBoxes() throws SQLException;
     void addServerBox(String name) throws SQLException;
 
-    List<Device> getDevices(int serverBoxId) throws SQLException;
+    List<Device> getDevices(int serverBoxId, int deviceId) throws SQLException;
     void removeDevice(int deviceId) throws SQLException;
     void addDevice(String name, int num, int size, int serverBoxId, String desc) throws SQLException;
+    void updateDevice(int deviceId, String name, int num, int size, int serverBoxId, String desc) throws SQLException;
 
-    List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException;
+    List<SlotInterface> getSlotInterfaces(int deviceId, int slotInterfaceId) throws SQLException;
     void removeSlotInterface(int slotInterfaceId) throws SQLException;
     void addSlotInterface(int deviceSlotId, String name, Integer linkId) throws SQLException;
+    void updateSlotInterface(int slotInterfaceId, int deiceSlotId, String name, Integer linkId) throws SQLException;
 
     List<DeviceSlot> getDeviceSlots(int deviceId) throws SQLException;
     void addDeviceSlot(String name, int deviceId) throws SQLException;
@@ -24,5 +26,6 @@ public interface IStorageRepo {
 
     List<InterfaceType> getInterfaceTypes() throws SQLException;
 
+    SlotInterface getSlotInterfaceByLink(int linkId, int sourceSlotInterfaceId) throws SQLException;
     void addLink(int sourceSlotInterfaceId, int targetInterfaceId, int interfaceTypeId) throws SQLException;
 }

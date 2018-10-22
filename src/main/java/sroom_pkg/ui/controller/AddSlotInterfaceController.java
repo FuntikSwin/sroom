@@ -53,6 +53,7 @@ public class AddSlotInterfaceController {
 
         buttonOK = dialog.getButtonOK();
         tfInterfaceName = dialog.getTfInterfaceName();
+        tfInterfaceName.setText(model.getName());
         addSlotButton = dialog.getAddSlotButton();
         renameSlotButton = dialog.getRenameSlotButton();
     }
@@ -61,14 +62,18 @@ public class AddSlotInterfaceController {
         buttonOK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                dialog.dispose();
                 model.setName(tfInterfaceName.getText());
                 ComboBoxItem item = (ComboBoxItem) cbDeviceSlots.getSelectedItem();
                 model.setSelectedDeviceSlotId(Integer.parseInt(item.getKey()));
-                dialog.dispose();
                 try {
-                    storageRepo.addSlotInterface(model.getSelectedDeviceSlotId(), model.getName(), null);
+                    if (model.isAddInterface()) {
+                        storageRepo.addSlotInterface(model.getSelectedDeviceSlotId(), model.getName(), null);
+                    } else {
+                        storageRepo.updateSlotInterface(model.getModifyInterfaceId(), model.getSelectedDeviceSlotId(), model.getName(), model.getInterfaceLinkId());
+                    }
                 } catch (SQLException e1) {
-                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -115,8 +120,16 @@ public class AddSlotInterfaceController {
             return;
         }
 
-        for (DeviceSlot item: deviceSlots) {
+        DeviceSlot currSlot = null;
+        for (DeviceSlot item : deviceSlots) {
+            currSlot = item;
             cbDeviceSlots.addItem(item);
+            if (model.getSelectedDeviceSlotId() > 0 && item.getId() == model.getSelectedDeviceSlotId()) {
+                cbDeviceSlots.setSelectedItem(item);
+            }
+        }
+        if (model.isAddInterface() && currSlot != null) {
+            cbDeviceSlots.setSelectedItem(currSlot);
         }
     }
 

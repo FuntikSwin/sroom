@@ -19,8 +19,10 @@ public class AddDeviceDialog extends JDialog {
         setModal(true);
 
         setTitle("Add new device");
-        spDeviceNum.setModel(new SpinnerNumberModel(1.0, 1.0, 200.0, 1.0));
-        spDeviceSize.setModel(new SpinnerNumberModel(1.0, 1.0, 10.0, 1.0));
+        //spDeviceNum.setModel(new SpinnerNumberModel(1.0, 1.0, 200.0, 1.0));
+        spDeviceNum.setModel(new SpinnerNumberModel(1, 1, 200, 1));
+        //spDeviceSize.setModel(new SpinnerNumberModel(1.0, 1.0, 10.0, 1.0));
+        spDeviceSize.setModel(new SpinnerNumberModel(1, 1, 10, 1));
 
         getRootPane().setDefaultButton(buttonOK);
 

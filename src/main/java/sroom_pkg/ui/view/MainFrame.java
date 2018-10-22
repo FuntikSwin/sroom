@@ -21,7 +21,11 @@ public class MainFrame extends JFrame {
 
         //setSize(500, 500);
 
-        DefaultTableModel tblModel = new DefaultTableModel();
+        DefaultTableModel tblModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tblModel.addColumn("DeviceId");
         tblModel.addColumn("ServerBox");
         tblModel.addColumn("Num");
@@ -29,14 +33,20 @@ public class MainFrame extends JFrame {
         tblModel.addColumn("Desc");
         tblDevices.setModel(tblModel);
         tblDevices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblDevices.removeColumn(tblDevices.getColumnModel().getColumn(0));
 
-        tblModel = new DefaultTableModel();
+        tblModel = new DefaultTableModel() {
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         tblModel.addColumn("InterfaceId");
         tblModel.addColumn("Slot");
         tblModel.addColumn("Name");
         tblModel.addColumn("LinkId");
         tblInterfaces.setModel(tblModel);
         tblInterfaces.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        tblInterfaces.removeColumn(tblInterfaces.getColumnModel().getColumn(0));
 
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

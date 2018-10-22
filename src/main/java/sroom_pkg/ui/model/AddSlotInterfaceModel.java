@@ -10,8 +10,12 @@ public class AddSlotInterfaceModel {
     private String name;
     private int selectedDeviceId;
     private int selectedDeviceSlotId;
+    private boolean addInterface;
+    private int modifyInterfaceId;
+    private int interfaceLinkId;
 
     public AddSlotInterfaceModel() {
+        addInterface = true;
     }
 
     public List<DeviceSlot> getDeviceSlots() {
@@ -44,5 +48,29 @@ public class AddSlotInterfaceModel {
 
     public void setSelectedDeviceSlotId(int selectedDeviceSlotId) {
         this.selectedDeviceSlotId = selectedDeviceSlotId;
+    }
+
+    public boolean isAddInterface() {
+        return addInterface;
+    }
+
+    public void setAddInterface(boolean addInterface) {
+        this.addInterface = addInterface;
+    }
+
+    public int getModifyInterfaceId() {
+        return modifyInterfaceId;
+    }
+
+    public void setModifyInterfaceId(int modifyInterfaceId) {
+        this.modifyInterfaceId = modifyInterfaceId;
+    }
+
+    public int getInterfaceLinkId() {
+        return interfaceLinkId;
+    }
+
+    public void setInterfaceLinkId(int interfaceLinkId) {
+        this.interfaceLinkId = interfaceLinkId;
     }
 }

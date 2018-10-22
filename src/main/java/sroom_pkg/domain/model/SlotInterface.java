@@ -8,6 +8,7 @@ public class SlotInterface extends ComboBoxItem {
     private Integer linkId;
 
     private DeviceSlot deviceSlot;
+    private InterfaceType interfaceType;
 
     public SlotInterface(int id, Integer slotId, String name, Integer linkId) {
         this.id = id;
@@ -54,6 +55,14 @@ public class SlotInterface extends ComboBoxItem {
 
     public void setDeviceSlot(DeviceSlot deviceSlot) {
         this.deviceSlot = deviceSlot;
+    }
+
+    public InterfaceType getInterfaceType() {
+        return interfaceType;
+    }
+
+    public void setInterfaceType(InterfaceType interfaceType) {
+        this.interfaceType = interfaceType;
     }
 
     @Override

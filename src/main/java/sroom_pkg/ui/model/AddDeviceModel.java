@@ -7,12 +7,16 @@ import java.util.List;
 public class AddDeviceModel {
 
     private String name;
+    private String desc;
     private int num;
     private int size;
     private List<ServerBox> serverBoxes;
     private int selectedServerBoxId;
+    private boolean addDevice;
+    private int modifyDeviceId;
 
     public AddDeviceModel() {
+        addDevice = true;
     }
 
     public String getName() {
@@ -21,6 +25,14 @@ public class AddDeviceModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public int getNum() {
@@ -53,5 +65,21 @@ public class AddDeviceModel {
 
     public void setSelectedServerBoxId(int selectedServerBoxId) {
         this.selectedServerBoxId = selectedServerBoxId;
+    }
+
+    public boolean isAddDevice() {
+        return addDevice;
+    }
+
+    public void setAddDevice(boolean addDevice) {
+        this.addDevice = addDevice;
+    }
+
+    public int getModifyDeviceId() {
+        return modifyDeviceId;
+    }
+
+    public void setModifyDeviceId(int modifyDeviceId) {
+        this.modifyDeviceId = modifyDeviceId;
     }
 }

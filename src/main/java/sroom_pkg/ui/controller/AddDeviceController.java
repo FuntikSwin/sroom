@@ -45,9 +45,16 @@ public class AddDeviceController {
 
     private void initComponent() {
         dialog = new AddDeviceDialog();
+
         tfDeviceName = dialog.getTfDeviceName();
+        tfDeviceName.setText(model.getName());
+
         spDeviceNum = dialog.getSpDeviceNum();
+        spDeviceNum.setValue(model.getNum());
+
         spDeviceSize = dialog.getSpDeviceSize();
+        spDeviceSize.setValue(model.getSize());
+
         cbServerBoxes = dialog.getCbServerBoxes();
 
         updateServerBoxes();
@@ -55,7 +62,9 @@ public class AddDeviceController {
         addServerBoxButton = dialog.getAddServerBoxButton();
         buttonCancel = dialog.getButtonCancel();
         buttonOK = dialog.getButtonOK();
+
         tfDesc = dialog.getTfDesc();
+        tfDesc.setText(model.getDesc());
     }
 
     private void initListener() {
@@ -88,12 +97,23 @@ public class AddDeviceController {
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
                 try {
-                    storageRepo.addDevice(
-                            tfDeviceName.getText()
-                            , ((Double) spDeviceNum.getValue()).intValue()
-                            , ((Double) spDeviceSize.getValue()).intValue()
-                            , getSelectedServerBoxId()
-                            , tfDesc.getText());
+                    if (model.isAddDevice()) {
+                        storageRepo.addDevice(
+                                tfDeviceName.getText()
+                                //, ((Double) spDeviceNum.getValue()).intValue()
+                                , (int) spDeviceNum.getValue()
+                                //, ((Double) spDeviceSize.getValue()).intValue()
+                                , (int) spDeviceSize.getValue()
+                                , getSelectedServerBoxId()
+                                , tfDesc.getText());
+                    } else {
+                        storageRepo.updateDevice(model.getModifyDeviceId()
+                                , tfDeviceName.getText()
+                                , (int) spDeviceNum.getValue()
+                                , (int) spDeviceSize.getValue()
+                                , getSelectedServerBoxId()
+                                , tfDesc.getText());
+                    }
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }

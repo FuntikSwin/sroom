@@ -82,7 +82,79 @@ public class MainFrameController {
         tblDevices.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                updateSlotInterfacesTable();
+                if (e.getClickCount() == 1) {
+                    updateSlotInterfacesTable();
+                } else {
+                    AddDeviceModel dlgModel = new AddDeviceModel();
+                    dlgModel.setAddDevice(false);
+                    List<Device> devices = new ArrayList<>();
+                    try {
+                        devices = storageRepo.getDevices(0, getSelectedDeviceId());
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (devices.size() != 1) {
+                        JOptionPane.showMessageDialog(null, "Не определено устройство!", "Внимание!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    Device currDevice = devices.get(0);
+
+                    dlgModel.setModifyDeviceId(currDevice.getId());
+                    dlgModel.setName(currDevice.getName());
+                    dlgModel.setDesc(currDevice.getDesc());
+                    dlgModel.setNum(currDevice.getNum());
+                    dlgModel.setSize(currDevice.getSize());
+                    dlgModel.setServerBoxes(new ArrayList<ServerBox>());
+                    dlgModel.setSelectedServerBoxId(currDevice.getServerBoxId());
+
+                    AddDeviceController dlgController = new AddDeviceController(mainFrame, dlgModel);
+                    dlgController.getDialog().addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            updateDevicesTable();
+                        }
+                    });
+                    dlgController.show();
+                }
+                super.mouseClicked(e);
+            }
+        });
+
+        tblInterfaces.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    AddSlotInterfaceModel dlgModel = new AddSlotInterfaceModel();
+                    dlgModel.setAddInterface(false);
+                    List<SlotInterface> slotInterfaces = new ArrayList<>();
+                    try {
+                        slotInterfaces = storageRepo.getSlotInterfaces(0, getSelectedSlotInterfaceId());
+                    } catch (Exception e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    if (slotInterfaces.size() != 1) {
+                        JOptionPane.showMessageDialog(null, "Не определен интерфейс!", "Внимание!", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                    SlotInterface slotInterface = slotInterfaces.get(0);
+
+                    dlgModel.setModifyInterfaceId(slotInterface.getId());
+                    dlgModel.setInterfaceLinkId(slotInterface.getLinkId());
+                    dlgModel.setName(slotInterface.getName());
+                    dlgModel.setSelectedDeviceSlotId(slotInterface.getSlotId());
+                    dlgModel.setSelectedDeviceId(slotInterface.getDeviceSlot().getDeviceId());
+
+                    AddSlotInterfaceController dlgController = new AddSlotInterfaceController(mainFrame, dlgModel);
+                    dlgController.getDialog().addWindowListener(new WindowAdapter() {
+                        @Override
+                        public void windowClosed(WindowEvent e) {
+                            updateSlotInterfacesTable();
+                        }
+                    });
+                    dlgController.show();
+                }
                 super.mouseClicked(e);
             }
         });
@@ -112,6 +184,7 @@ public class MainFrameController {
         addInterfaceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
                 AddSlotInterfaceModel dlgModel = new AddSlotInterfaceModel();
                 try {
                     int deviceId = getSelectedDeviceId();
@@ -119,7 +192,7 @@ public class MainFrameController {
                     dlgModel.setName("");
                     dlgModel.setSelectedDeviceId(deviceId);
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
                 AddSlotInterfaceController dlg = new AddSlotInterfaceController(mainFrame, dlgModel);
@@ -138,7 +211,7 @@ public class MainFrameController {
             public void actionPerformed(ActionEvent e) {
                 List<SlotInterface> slotInterfaces = new ArrayList<>();
                 try {
-                    slotInterfaces = storageRepo.getSlotInterfaces(getSelectedDeviceId());
+                    slotInterfaces = storageRepo.getSlotInterfaces(getSelectedDeviceId(), 0);
                 } catch (Exception e1) {
                     e1.printStackTrace();
                     return;
@@ -160,7 +233,6 @@ public class MainFrameController {
                     }
                     updateDevicesTable();
                 }
-
             }
         });
 
@@ -199,15 +271,24 @@ public class MainFrameController {
                 LinkModel dlgModel = new LinkModel();
                 List<SlotInterface> slotInterfaces = new ArrayList<>();
                 try {
-                    slotInterfaces = storageRepo.getSlotInterfaces(getSelectedDeviceId());
+                    slotInterfaces = storageRepo.getSlotInterfaces(0, interfaceId);
                 } catch (Exception e1) {
-                    e1.printStackTrace();
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (slotInterfaces.size() != 1) {
+                    JOptionPane.showMessageDialog(null, "Интерфейс не определен", "Внимание!", JOptionPane.ERROR_MESSAGE);
                     return;
                 }
 
-                for (SlotInterface item: slotInterfaces) {
-                    if (item.getId() == interfaceId) {
-                        dlgModel.setSlotInterface(item);
+                dlgModel.setSlotInterface(slotInterfaces.get(0));
+                dlgModel.setTargetSlotInterface(null);
+                if (dlgModel.getSlotInterface().getLinkId() > 0) {
+                    try {
+                        dlgModel.setTargetSlotInterface(storageRepo.getSlotInterfaceByLink(dlgModel.getSlotInterface().getLinkId(), dlgModel.getSlotInterface().getId()));
+                    } catch (SQLException e1) {
+                        JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                        return;
                     }
                 }
 
@@ -254,7 +335,7 @@ public class MainFrameController {
 
         List<Device> data = new ArrayList<>();
         try {
-            data = storageRepo.getDevices(getSelectedServerBoxId());
+            data = storageRepo.getDevices(getSelectedServerBoxId(), 0);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -277,7 +358,7 @@ public class MainFrameController {
 
         List<SlotInterface> data = new ArrayList<>();
         try {
-            data = storageRepo.getSlotInterfaces(getSelectedDeviceId());
+            data = storageRepo.getSlotInterfaces(getSelectedDeviceId(), 0);
         } catch (Exception e) {
             e.printStackTrace();
             return;

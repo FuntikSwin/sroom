@@ -70,6 +70,9 @@ public class LinkController {
         }
         for (InterfaceType item: interfaceTypes) {
             cbInterfaceType.addItem(item);
+            if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getInterfaceType().getId() == item.getId()) {
+                cbInterfaceType.setSelectedItem(item);
+            }
         }
 
         buttonOK = dialog.getButtonOK();
@@ -87,6 +90,9 @@ public class LinkController {
 
         for (ServerBox item: serverBoxes) {
             cbServerBoxes.addItem(item);
+            if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getDeviceSlot().getDevice().getServerBoxId() == item.getId()) {
+                cbServerBoxes.setSelectedItem(item);
+            }
         }
         updateDevices();
     }
@@ -99,7 +105,7 @@ public class LinkController {
             if (serverBoxId == null) {
                 return;
             }
-            devices = storageRepo.getDevices(serverBoxId);
+            devices = storageRepo.getDevices(serverBoxId, 0);
         } catch (SQLException e) {
             e.printStackTrace();
             return;
@@ -107,6 +113,9 @@ public class LinkController {
 
         for (Device item: devices) {
             cbDevices.addItem(item);
+            if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getDeviceSlot().getDeviceId() == item.getId()) {
+                cbDevices.setSelectedItem(item);
+            }
         }
         updateDeviceSlots();
     }
@@ -127,6 +136,9 @@ public class LinkController {
 
         for (DeviceSlot item: deviceSlots) {
             cbDeviceSlots.addItem(item);
+            if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getSlotId() == item.getId()) {
+                cbDeviceSlots.setSelectedItem(item);
+            }
         }
         updateSlotInterfaces();
     }
@@ -139,7 +151,7 @@ public class LinkController {
             if (deviceId == null) {
                 return;
             }
-            slotInterfaces = storageRepo.getSlotInterfaces(deviceId);
+            slotInterfaces = storageRepo.getSlotInterfaces(deviceId, 0);
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -149,6 +161,9 @@ public class LinkController {
                 continue;
             }
             cbSlotInterfaces.addItem(item);
+            if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getId() == item.getId()) {
+                cbSlotInterfaces.setSelectedItem(item);
+            }
         }
     }
 
@@ -209,7 +224,12 @@ public class LinkController {
                 String intTypeIdStr = ((ComboBoxItem) cbInterfaceType.getSelectedItem()).getKey();
 
                 try {
-                    storageRepo.addLink(model.getSlotInterface().getId(), Integer.parseInt(targetIdStr), Integer.parseInt(intTypeIdStr));
+                    if (model.getTargetSlotInterface() == null) {
+                        storageRepo.addLink(model.getSlotInterface().getId(), Integer.parseInt(targetIdStr), Integer.parseInt(intTypeIdStr));
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Не реализовано!!!");
+                        return;
+                    }
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }

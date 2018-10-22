@@ -82,7 +82,7 @@ public class DbStorageRepo implements IStorageRepo {
         closeConnection();
     }
 
-    public List<Device> getDevices(int serverBoxId) throws SQLException {
+    public List<Device> getDevices(int serverBoxId, int deviceId) throws SQLException {
         List<Device> data = new ArrayList<>();
 
         try {
@@ -98,14 +98,15 @@ public class DbStorageRepo implements IStorageRepo {
         String sql = "select d.Id, d.Name, d.Num, d.Size, d.ServerBoxId, sb.Name ServerBoxName, d.Desc " +
                 "from Device d " +
                 "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
-                "where d.ServerBoxId = case when " + Integer.toString(serverBoxId) + " = 0 then d.ServerBoxId else " + Integer.toString(serverBoxId) + " end";
+                "where d.ServerBoxId = case when " + Integer.toString(serverBoxId) + " = 0 then d.ServerBoxId else " + Integer.toString(serverBoxId) + " end " +
+                "and d.Id = case when " + Integer.toString(deviceId) + " = 0 then d.Id else " + Integer.toString(deviceId) + " end";
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(sql)) {
             while (resultSet.next()) {
                 Device item = new Device(resultSet.getInt("Id")
                         , resultSet.getString("Name")
                         , resultSet.getInt("Num")
-                        , 0
+                        , resultSet.getInt("Size")
                         , resultSet.getInt("ServerBoxId")
                         , resultSet.getString("Desc"));
                 if (item.getServerBoxId() != null) {
@@ -202,7 +203,39 @@ public class DbStorageRepo implements IStorageRepo {
         closeConnection();
     }
 
-    public List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException {
+    @Override
+    public void updateDevice(int deviceId, String name, int num, int size, int serverBoxId, String desc) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "update Device " +
+                "set Name = ? " +
+                "  , Num = ? " +
+                "  , 'Size' = ? " +
+                "  , ServerBoxId = ? " +
+                "  , 'Desc' = ? " +
+                "where Id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, num);
+            pstmt.setInt(3, size);
+            pstmt.setInt(4, serverBoxId);
+            pstmt.setString(5, desc);
+            pstmt.setInt(6, deviceId);
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
+
+    public List<SlotInterface> getSlotInterfaces(int deviceId, int slotInterfaceId) throws SQLException {
         List<SlotInterface> data = new ArrayList<>();
 
         try {
@@ -215,49 +248,58 @@ public class DbStorageRepo implements IStorageRepo {
             return null;
         }
 
-        String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName " +
-                "from SlotInterface i " +
-                "left join DeviceSlot s ON s.Id = i.SlotId " +
-                "left join Device d ON d.Id = s.DeviceId " +
-                "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
-                "where s.DeviceId = " + Integer.toString(deviceId);
-        try (Statement stmt = connection.createStatement();
-             ResultSet resultSet = stmt.executeQuery(sql)) {
-            while (resultSet.next()) {
-                SlotInterface item = new SlotInterface(
-                        resultSet.getInt("Id")
-                        , resultSet.getInt("SlotId")
-                        , resultSet.getString("Name")
-                        , resultSet.getInt("LinkId"));
-                if (item.getSlotId() != null) {
-                    DeviceSlot itemSlot = new DeviceSlot(
-                            item.getSlotId()
-                            , resultSet.getString("SlotName")
-                            , resultSet.getInt("DeviceId"));
-                    if (itemSlot.getDeviceId() != null) {
-                        Device itemDevice = new Device(
-                                itemSlot.getDeviceId()
-                                , resultSet.getString("DeviceName")
-                                , resultSet.getInt("DeviceNum")
-                                , 0
-                                , resultSet.getInt("ServerBoxId")
-                                , "");
-                        if (itemDevice.getServerBoxId() != null) {
-                            ServerBox itemBox = new ServerBox(
-                                    itemDevice.getServerBoxId()
-                                    , resultSet.getString("ServerBoxName"));
-                            itemDevice.setServerBox(itemBox);
+        if (deviceId > 0 || slotInterfaceId > 0) {
+            String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName, l.InterfaceTypeId, it.Name InterfaceTypeName " +
+                    "from SlotInterface i " +
+                    "left join DeviceSlot s ON s.Id = i.SlotId " +
+                    "left join Device d ON d.Id = s.DeviceId " +
+                    "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
+                    "left join Link l ON l.Id = i.LinkId " +
+                    "left join InterfaceType it on it.Id = l.InterfaceTypeId " +
+                    "where s.DeviceId = case when " + Integer.toString(deviceId) + " = 0 then s.DeviceId else " + Integer.toString(deviceId) + " end " +
+                    "and i.Id = case when " + Integer.toString(slotInterfaceId) + " = 0 then i.Id else " + Integer.toString(slotInterfaceId) + " end";
+            try (Statement stmt = connection.createStatement();
+                 ResultSet resultSet = stmt.executeQuery(sql)) {
+                while (resultSet.next()) {
+                    SlotInterface item = new SlotInterface(
+                            resultSet.getInt("Id")
+                            , resultSet.getInt("SlotId")
+                            , resultSet.getString("Name")
+                            , resultSet.getInt("LinkId"));
+                    if (item.getSlotId() != null) {
+                        DeviceSlot itemSlot = new DeviceSlot(
+                                item.getSlotId()
+                                , resultSet.getString("SlotName")
+                                , resultSet.getInt("DeviceId"));
+                        if (itemSlot.getDeviceId() != null) {
+                            Device itemDevice = new Device(
+                                    itemSlot.getDeviceId()
+                                    , resultSet.getString("DeviceName")
+                                    , resultSet.getInt("DeviceNum")
+                                    , 0
+                                    , resultSet.getInt("ServerBoxId")
+                                    , "");
+                            if (itemDevice.getServerBoxId() != null) {
+                                ServerBox itemBox = new ServerBox(
+                                        itemDevice.getServerBoxId()
+                                        , resultSet.getString("ServerBoxName"));
+                                itemDevice.setServerBox(itemBox);
+                            }
+
+                            itemSlot.setDevice(itemDevice);
                         }
 
-                        itemSlot.setDevice(itemDevice);
+                        item.setDeviceSlot(itemSlot);
                     }
-
-                    item.setDeviceSlot(itemSlot);
+                    if (item.getLinkId() != null && item.getLinkId() > 0) {
+                        InterfaceType interfaceType = new InterfaceType(resultSet.getInt("InterfaceTypeId"), resultSet.getString("InterfaceTypeName"));
+                        item.setInterfaceType(interfaceType);
+                    }
+                    data.add(item);
                 }
-                data.add(item);
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
 
         closeConnection();
@@ -305,6 +347,36 @@ public class DbStorageRepo implements IStorageRepo {
             } else {
                 pstmt.setInt(3, linkId);
             }
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        closeConnection();
+    }
+
+    @Override
+    public void updateSlotInterface(int slotInterfaceId, int deiceSlotId, String name, Integer linkId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "update SlotInterface " +
+                "set SlotId = ? " +
+                ", 'Name' = ? " +
+                ", LinkId = ? " +
+                "where Id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, deiceSlotId);
+            pstmt.setString(2, name);
+            pstmt.setInt(3, linkId);
+            pstmt.setInt(4, slotInterfaceId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -411,6 +483,45 @@ public class DbStorageRepo implements IStorageRepo {
 
         closeConnection();
         return data;
+    }
+
+    @Override
+    public SlotInterface getSlotInterfaceByLink(int linkId, int sourceSlotInterfaceId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+        SlotInterface targetSlotINterface = null;
+
+        int targetSlotInterfaceId = 0;
+        String sql = "select i.Id " +
+                "from SlotInterface i " +
+                "where i.LinkId = ? " +
+                "and i.Id <> ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, linkId);
+            pstmt.setInt(2, sourceSlotInterfaceId);
+            try (ResultSet resultSet = pstmt.executeQuery()) {
+                if (resultSet.next()) {
+                    targetSlotInterfaceId = resultSet.getInt(1);
+                }
+            }
+        }
+        closeConnection();
+
+        if (targetSlotInterfaceId > 0) {
+            List<SlotInterface> slotInterfaces = getSlotInterfaces(0, targetSlotInterfaceId);
+            if (slotInterfaces.size() == 1) {
+                targetSlotINterface = slotInterfaces.get(0);
+            }
+        }
+
+        return targetSlotINterface;
     }
 
     @Override
