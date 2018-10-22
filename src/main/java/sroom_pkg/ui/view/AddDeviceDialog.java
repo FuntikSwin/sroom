@@ -3,45 +3,51 @@ package sroom_pkg.ui.view;
 import javax.swing.*;
 import java.awt.event.*;
 
-public class AddSlotInterfaceDialog extends JDialog {
+public class AddDeviceDialog extends JDialog {
     private JPanel contentPane;
     private JButton buttonOK;
     private JButton buttonCancel;
-    private JTextField tfInterfaceName;
-    private JComboBox cbDeviceSlots;
-    private JButton addSlotButton;
-    private JButton renameSlotButton;
+    private JTextField tfDeviceName;
+    private JSpinner spDeviceSize;
+    private JSpinner spDeviceNum;
+    private JComboBox cbServerBoxes;
+    private JButton addServerBoxButton;
+    private JTextField tfDesc;
 
-    public AddSlotInterfaceDialog() {
+    public AddDeviceDialog() {
         setContentPane(contentPane);
         setModal(true);
+
+        setTitle("Add new device");
+        spDeviceNum.setModel(new SpinnerNumberModel(1.0, 1.0, 200.0, 1.0));
+        spDeviceSize.setModel(new SpinnerNumberModel(1.0, 1.0, 10.0, 1.0));
+
         getRootPane().setDefaultButton(buttonOK);
-        setTitle("Add new interface");
 
         /*buttonOK.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onOK();
             }
-        });*/
+        });
 
         buttonCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 onCancel();
             }
-        });
+        });*/
 
         // call onCancel() when cross is clicked
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        /*setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
                 onCancel();
             }
-        });
+        });*/
 
         // call onCancel() on ESCAPE
         contentPane.registerKeyboardAction(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                onCancel();
+                dispose();
             }
         }, KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     }
@@ -49,30 +55,42 @@ public class AddSlotInterfaceDialog extends JDialog {
     /*private void onOK() {
         // add your code here
         dispose();
-    }*/
+    }
 
     private void onCancel() {
         // add your code here if necessary
         dispose();
+    }*/
+
+    public JTextField getTfDeviceName() {
+        return tfDeviceName;
     }
 
-    public JComboBox getCbDeviceSlots() {
-        return cbDeviceSlots;
+    public JSpinner getSpDeviceNum() {
+        return spDeviceNum;
+    }
+
+    public JSpinner getSpDeviceSize() {
+        return spDeviceSize;
+    }
+
+    public JComboBox getCbServerBoxes() {
+        return cbServerBoxes;
+    }
+
+    public JButton getAddServerBoxButton() {
+        return addServerBoxButton;
+    }
+
+    public JButton getButtonCancel() {
+        return buttonCancel;
     }
 
     public JButton getButtonOK() {
         return buttonOK;
     }
 
-    public JTextField getTfInterfaceName() {
-        return tfInterfaceName;
-    }
-
-    public JButton getAddSlotButton() {
-        return addSlotButton;
-    }
-
-    public JButton getRenameSlotButton() {
-        return renameSlotButton;
+    public JTextField getTfDesc() {
+        return tfDesc;
     }
 }

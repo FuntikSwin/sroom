@@ -27,6 +27,7 @@ public class AddSlotInterfaceController {
     private JButton buttonOK;
     private JTextField tfInterfaceName;
     private JButton addSlotButton;
+    private JButton renameSlotButton;
 
     public AddSlotInterfaceController(MainFrame parent, AddSlotInterfaceModel model) {
         this.parent = parent;
@@ -53,6 +54,7 @@ public class AddSlotInterfaceController {
         buttonOK = dialog.getButtonOK();
         tfInterfaceName = dialog.getTfInterfaceName();
         addSlotButton = dialog.getAddSlotButton();
+        renameSlotButton = dialog.getRenameSlotButton();
     }
 
     private void initListener() {
@@ -82,6 +84,22 @@ public class AddSlotInterfaceController {
                     } catch (SQLException e1) {
                         e1.printStackTrace();
                     }
+                }
+            }
+        });
+
+        renameSlotButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String newName = JOptionPane.showInputDialog("Новое имя слота:");
+                if (newName != null && !newName.equals("")) {
+                    ComboBoxItem item = (ComboBoxItem) cbDeviceSlots.getSelectedItem();
+                    try {
+                        storageRepo.updateDeviceSlot(Integer.parseInt(item.getKey()), newName);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                    updateDeviceSlots();
                 }
             }
         });

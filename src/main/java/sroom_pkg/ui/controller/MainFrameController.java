@@ -6,6 +6,7 @@ import sroom_pkg.domain.model.ComboBoxItem;
 import sroom_pkg.domain.model.Device;
 import sroom_pkg.domain.model.ServerBox;
 import sroom_pkg.domain.model.SlotInterface;
+import sroom_pkg.ui.model.AddDeviceModel;
 import sroom_pkg.ui.model.AddSlotInterfaceModel;
 import sroom_pkg.ui.view.MainFrame;
 
@@ -27,6 +28,7 @@ public class MainFrameController {
     private JButton removeInterfaceButton;
     private JButton addInterfaceButton;
     private JButton removeDeviceButton;
+    private JButton addDeviceButton;
 
     public MainFrameController() {
         initComponent();
@@ -62,6 +64,7 @@ public class MainFrameController {
         removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
         addInterfaceButton = mainFrame.getAddInterfaceButton();
         removeDeviceButton = mainFrame.getRemoveDeviceButton();
+        addDeviceButton = mainFrame.getAddDeviceButton();
     }
 
     private void initListeners() {
@@ -136,17 +139,45 @@ public class MainFrameController {
                     e1.printStackTrace();
                     return;
                 }
+                int input = JOptionPane.YES_OPTION;
                 if (slotInterfaces.size() > 0) {
-                    int input = JOptionPane.showConfirmDialog(
+                    input = JOptionPane.showConfirmDialog(
                             null
                             , "У устройства найдены интерфейсы! Удалить устройство и интерфейсы?"
                             , "Select"
                             , JOptionPane.YES_NO_OPTION
                             , JOptionPane.WARNING_MESSAGE);
-                    if (input == JOptionPane.YES_OPTION) {
-                        JOptionPane.showMessageDialog(null, "Press OK");
-                    }
                 }
+                if (input == JOptionPane.YES_OPTION) {
+                    try {
+                        storageRepo.removeDevice(getSelectedDeviceId());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    updateDevicesTable();
+                }
+
+            }
+        });
+
+        addDeviceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddDeviceModel dlgModel = new AddDeviceModel();
+                dlgModel.setSelectedServerBoxId(getSelectedServerBoxId());
+                dlgModel.setName("");
+                dlgModel.setNum(1);
+                dlgModel.setSize(1);
+                dlgModel.setServerBoxes(new ArrayList<ServerBox>());
+
+                AddDeviceController dlgController = new AddDeviceController(mainFrame, dlgModel);
+                dlgController.getDialog().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        updateDevicesTable();
+                    }
+                });
+                dlgController.show();
             }
         });
     }
@@ -179,7 +210,7 @@ public class MainFrameController {
         }
 
         for (Device item : data) {
-            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName()});
+            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName(), item.getDesc()});
         }
 
         tableModel = (DefaultTableModel) tblInterfaces.getModel();

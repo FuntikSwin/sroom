@@ -11,9 +11,11 @@ import java.util.List;
 public interface IStorageRepo {
 
     List<ServerBox> getServerBoxes() throws SQLException;
+    void addServerBox(String name) throws SQLException;
 
     List<Device> getDevices(int serverBoxId) throws SQLException;
     void removeDevice(int deviceId) throws SQLException;
+    void addDevice(String name, int num, int size, int serverBoxId, String desc) throws SQLException;
 
     List<SlotInterface> getSlotInterfaces(int deviceId) throws SQLException;
     void removeSlotInterface(int slotInterfaceId) throws SQLException;
@@ -21,4 +23,5 @@ public interface IStorageRepo {
 
     List<DeviceSlot> getDeviceSlots(int deviceId) throws SQLException;
     void addDeviceSlot(String name, int deviceId) throws SQLException;
+    void updateDeviceSlot(int deviceSlotId, String name) throws SQLException;
 }

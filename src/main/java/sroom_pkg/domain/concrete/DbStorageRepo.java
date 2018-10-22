@@ -64,6 +64,27 @@ public class DbStorageRepo implements IStorageRepo {
         return data;
     }
 
+    @Override
+    public void addServerBox(String name) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "insert into ServerBox(Name) values(?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
+
     public List<Device> getDevices(int serverBoxId) throws SQLException {
         List<Device> data = new ArrayList<>();
 
@@ -77,7 +98,7 @@ public class DbStorageRepo implements IStorageRepo {
             return null;
         }
 
-        String sql = "select d.Id, d.Name, d.Num, d.Size, d.ServerBoxId, sb.Name ServerBoxName " +
+        String sql = "select d.Id, d.Name, d.Num, d.Size, d.ServerBoxId, sb.Name ServerBoxName, d.Desc " +
                 "from Device d " +
                 "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
                 "where d.ServerBoxId = case when " + Integer.toString(serverBoxId) + " = 0 then d.ServerBoxId else " + Integer.toString(serverBoxId) + " end";
@@ -88,7 +109,8 @@ public class DbStorageRepo implements IStorageRepo {
                         , resultSet.getString("Name")
                         , resultSet.getInt("Num")
                         , 0
-                        , resultSet.getInt("ServerBoxId"));
+                        , resultSet.getInt("ServerBoxId")
+                        , resultSet.getString("Desc"));
                 if (item.getServerBoxId() != null) {
                     item.setServerBox(new ServerBox(item.getServerBoxId(), resultSet.getString("ServerBoxName")));
                 }
@@ -120,8 +142,65 @@ public class DbStorageRepo implements IStorageRepo {
                 "where SlotId in ( " +
                 "select s.Id " +
                 "from DeviceSlot s " +
-                "where s.DeviceId = " + Integer.toString(deviceId) +
+                "where s.DeviceId = ?" +
                 ")";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, deviceId);
+            pstmt.executeUpdate();
+        }
+        sql = "delete from DeviceSlot where DeviceId = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, deviceId);
+            pstmt.executeUpdate();
+        }
+        sql = "delete from Device where Id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, deviceId);
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
+
+    @Override
+    public void addDevice(String name, int num, int size, int serverBoxId, String desc) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        int deviceId = 0;
+        String sql = "insert into Device(Name, Num, 'Size', ServerBoxId, Desc) values(?, ?, ?, ?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, num);
+            pstmt.setInt(3, size);
+            pstmt.setInt(4, serverBoxId);
+            pstmt.setString(5, desc);
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                return;
+            }
+            try (ResultSet genKeys = pstmt.getGeneratedKeys()) {
+                if (genKeys.next()) {
+                    deviceId = genKeys.getInt(1);
+                }
+            }
+        }
+
+        if (deviceId > 0) {
+            sql = "insert into DeviceSlot(Name, DeviceId) values(?, ?)";
+            try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+                pstmt.setString(1, "Default");
+                pstmt.setInt(2, deviceId);
+                pstmt.executeUpdate();
+            }
+        }
 
         closeConnection();
     }
@@ -263,6 +342,28 @@ public class DbStorageRepo implements IStorageRepo {
             pstmt.setString(1, name);
             pstmt.setInt(2, deviceId);
 
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
+
+    @Override
+    public void updateDeviceSlot(int deviceSlotId, String name) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "update DeviceSlot set Name = ? where Id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setString(1, name);
+            pstmt.setInt(2, deviceSlotId);
             pstmt.executeUpdate();
         }
 

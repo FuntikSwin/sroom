@@ -7,14 +7,16 @@ public class Device {
     private int num;
     private int size;
     private Integer serverBoxId;
+    private String desc;
     private ServerBox serverBox;
 
-    public Device(int id, String name, int num, int size, Integer serverBoxId) {
+    public Device(int id, String name, int num, int size, Integer serverBoxId, String desc) {
         this.id = id;
         this.name = name;
         this.num = num;
         this.size = size;
         this.serverBoxId = serverBoxId;
+        this.desc = desc;
     }
 
     public int getId() {
@@ -55,6 +57,14 @@ public class Device {
 
     public void setServerBoxId(Integer serverBoxId) {
         this.serverBoxId = serverBoxId;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public ServerBox getServerBox() {

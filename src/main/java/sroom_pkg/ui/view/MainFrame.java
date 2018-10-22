@@ -26,6 +26,7 @@ public class MainFrame extends JFrame {
         tblModel.addColumn("ServerBox");
         tblModel.addColumn("Num");
         tblModel.addColumn("Name");
+        tblModel.addColumn("Desc");
         tblDevices.setModel(tblModel);
         tblDevices.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
@@ -62,5 +63,9 @@ public class MainFrame extends JFrame {
 
     public JButton getRemoveDeviceButton() {
         return removeDeviceButton;
+    }
+
+    public JButton getAddDeviceButton() {
+        return addDeviceButton;
     }
 }
