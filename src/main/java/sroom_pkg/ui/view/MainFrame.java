@@ -29,6 +29,7 @@ public class MainFrame extends JFrame {
         tblModel.addColumn("DeviceId");
         tblModel.addColumn("ServerBox");
         tblModel.addColumn("Num");
+        tblModel.addColumn("Size");
         tblModel.addColumn("Name");
         tblModel.addColumn("Desc");
         tblDevices.setModel(tblModel);

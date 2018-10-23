@@ -41,7 +41,6 @@ public class MainFrameController {
     public void show() {
         mainFrame.pack();
         mainFrame.setSize(1000, 600);
-        //mainFrame.setLocationByPlatform(true);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
     }
@@ -347,7 +346,7 @@ public class MainFrameController {
             if (item.getNum() != null && item.getNum() > 0) {
                 deviceNumStr = Integer.toString(item.getNum());
             }
-            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), deviceNumStr, item.getName(), item.getDesc()});
+            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), deviceNumStr, Integer.toString(item.getSize()), item.getName(), item.getDesc()});
         }
 
         tableModel = (DefaultTableModel) tblInterfaces.getModel();
