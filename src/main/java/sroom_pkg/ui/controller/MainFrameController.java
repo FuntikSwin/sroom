@@ -2,10 +2,7 @@ package sroom_pkg.ui.controller;
 
 import sroom_pkg.domain.abstr.IStorageRepo;
 import sroom_pkg.domain.concrete.DbStorageRepo;
-import sroom_pkg.domain.model.ComboBoxItem;
-import sroom_pkg.domain.model.Device;
-import sroom_pkg.domain.model.ServerBox;
-import sroom_pkg.domain.model.SlotInterface;
+import sroom_pkg.domain.model.*;
 import sroom_pkg.ui.model.AddDeviceModel;
 import sroom_pkg.ui.model.AddSlotInterfaceModel;
 import sroom_pkg.ui.model.LinkModel;
@@ -184,11 +181,10 @@ public class MainFrameController {
         addInterfaceButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
                 AddSlotInterfaceModel dlgModel = new AddSlotInterfaceModel();
                 try {
                     int deviceId = getSelectedDeviceId();
-                    dlgModel.setDeviceSlots(storageRepo.getDeviceSlots(deviceId));
+                    dlgModel.setDeviceSlots(new ArrayList<DeviceSlot>());
                     dlgModel.setName("");
                     dlgModel.setDesc("");
                     dlgModel.setSelectedDeviceId(deviceId);

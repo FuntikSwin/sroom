@@ -99,7 +99,8 @@ public class DbStorageRepo implements IStorageRepo {
                 "from Device d " +
                 "left join ServerBox sb ON sb.Id = d.ServerBoxId " +
                 "where d.ServerBoxId = case when " + Integer.toString(serverBoxId) + " = 0 then d.ServerBoxId else " + Integer.toString(serverBoxId) + " end " +
-                "and d.Id = case when " + Integer.toString(deviceId) + " = 0 then d.Id else " + Integer.toString(deviceId) + " end";
+                "and d.Id = case when " + Integer.toString(deviceId) + " = 0 then d.Id else " + Integer.toString(deviceId) + " end " +
+                "order by d.ServerBoxId, d.Num";
         try (Statement stmt = connection.createStatement();
              ResultSet resultSet = stmt.executeQuery(sql)) {
             while (resultSet.next()) {

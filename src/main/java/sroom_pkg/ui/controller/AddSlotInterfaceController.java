@@ -46,10 +46,6 @@ public class AddSlotInterfaceController {
     private void initComponent() {
         dialog = new AddSlotInterfaceDialog();
         cbDeviceSlots = dialog.getCbDeviceSlots();
-
-        /*for(DeviceSlot item: model.getDeviceSlots()) {
-            cbDeviceSlots.addItem(item);
-        }*/
         updateDeviceSlots();
 
         buttonOK = dialog.getButtonOK();

@@ -13,6 +13,9 @@ public class LinkDialog extends JDialog {
     private JComboBox cbDeviceSlots;
     private JComboBox cbSlotInterfaces;
     private JComboBox cbInterfaceType;
+    private JButton addDevButton;
+    private JButton addSlotButton;
+    private JButton addIntButton;
 
     public LinkDialog() {
         setContentPane(contentPane);
@@ -70,4 +73,17 @@ public class LinkDialog extends JDialog {
     public JButton getButtonOK() {
         return buttonOK;
     }
+
+    public JButton getAddDevButton() {
+        return addDevButton;
+    }
+
+    public JButton getAddSlotButton() {
+        return addSlotButton;
+    }
+
+    public JButton getAddIntButton() {
+        return addIntButton;
+    }
+
 }

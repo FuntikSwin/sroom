@@ -3,6 +3,8 @@ package sroom_pkg.ui.controller;
 import sroom_pkg.domain.abstr.IStorageRepo;
 import sroom_pkg.domain.concrete.DbStorageRepo;
 import sroom_pkg.domain.model.*;
+import sroom_pkg.ui.model.AddDeviceModel;
+import sroom_pkg.ui.model.AddSlotInterfaceModel;
 import sroom_pkg.ui.model.LinkModel;
 import sroom_pkg.ui.view.LinkDialog;
 import sroom_pkg.ui.view.MainFrame;
@@ -11,6 +13,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +34,9 @@ public class LinkController {
     private JComboBox cbSlotInterfaces;
     private JComboBox cbInterfaceType;
     private JButton buttonOK;
+    private JButton addDevButton;
+    private JButton addSlotButton;
+    private JButton addIntButton;
 
     public LinkController(MainFrame parent, LinkModel model) {
         this.parent = parent;
@@ -77,6 +84,9 @@ public class LinkController {
         }
 
         buttonOK = dialog.getButtonOK();
+        addDevButton = dialog.getAddDevButton();
+        addSlotButton = dialog.getAddSlotButton();
+        addIntButton = dialog.getAddIntButton();
     }
 
     private void updateServerBoxes() {
@@ -258,6 +268,63 @@ public class LinkController {
                 } catch (SQLException e1) {
                     e1.printStackTrace();
                 }
+            }
+        });
+
+        addDevButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddDeviceModel dlgModel = new AddDeviceModel();
+                dlgModel.setSelectedServerBoxId(getSelectedServerBoxId());
+                dlgModel.setName("");
+                dlgModel.setNum(1);
+                dlgModel.setSize(1);
+                dlgModel.setServerBoxes(new ArrayList<ServerBox>());
+                AddDeviceController dlgController = new AddDeviceController(parent, dlgModel);
+                dlgController.getDialog().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        updateDevices();
+                        cbDevices.setSelectedIndex(cbDevices.getItemCount() - 1);
+                    }
+                });
+                dlgController.show();
+            }
+        });
+
+        addSlotButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String tmp = JOptionPane.showInputDialog("Название нового слота:");
+                if (tmp != null && !tmp.equals("")) {
+                    try {
+                        storageRepo.addDeviceSlot(tmp, getSelectedDeviceId());
+                        updateDeviceSlots();
+                        cbDeviceSlots.setSelectedIndex(cbDeviceSlots.getItemCount() - 1);
+                    } catch (SQLException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+            }
+        });
+
+        addIntButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                AddSlotInterfaceModel dlgModel = new AddSlotInterfaceModel();
+                dlgModel.setName("");
+                dlgModel.setDesc("");
+                dlgModel.setSelectedDeviceId(getSelectedDeviceId());
+                dlgModel.setDeviceSlots(new ArrayList<DeviceSlot>());
+                AddSlotInterfaceController dlg = new AddSlotInterfaceController(parent, dlgModel);
+                dlg.getDialog().addWindowListener(new WindowAdapter() {
+                    @Override
+                    public void windowClosed(WindowEvent e) {
+                        updateSlotInterfaces();
+                        cbSlotInterfaces.setSelectedIndex(cbSlotInterfaces.getItemCount() - 1);
+                    }
+                });
+                dlg.show();
             }
         });
     }
