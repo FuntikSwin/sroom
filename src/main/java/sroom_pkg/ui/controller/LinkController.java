@@ -93,6 +93,10 @@ public class LinkController {
             cbServerBoxes.addItem(item);
             if (model.getTargetSlotInterface() != null && model.getTargetSlotInterface().getDeviceSlot().getDevice().getServerBoxId() == item.getId()) {
                 cbServerBoxes.setSelectedItem(item);
+            } else {
+                if (model.getSlotInterface().getDeviceSlot().getDevice().getServerBoxId() == item.getId()){
+                    cbServerBoxes.setSelectedItem(item);
+                }
             }
         }
         updateDevices();
