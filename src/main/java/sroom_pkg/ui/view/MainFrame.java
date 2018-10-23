@@ -43,7 +43,9 @@ public class MainFrame extends JFrame {
         tblModel.addColumn("InterfaceId");
         tblModel.addColumn("Slot");
         tblModel.addColumn("Name");
-        tblModel.addColumn("LinkId");
+        //tblModel.addColumn("LinkId");
+        tblModel.addColumn("LinkInfo");
+        tblModel.addColumn("Desc");
         tblInterfaces.setModel(tblModel);
         tblInterfaces.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblInterfaces.removeColumn(tblInterfaces.getColumnModel().getColumn(0));

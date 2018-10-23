@@ -28,6 +28,7 @@ public class AddSlotInterfaceController {
     private JTextField tfInterfaceName;
     private JButton addSlotButton;
     private JButton renameSlotButton;
+    private JTextField tfDesc;
 
     public AddSlotInterfaceController(MainFrame parent, AddSlotInterfaceModel model) {
         this.parent = parent;
@@ -56,6 +57,8 @@ public class AddSlotInterfaceController {
         tfInterfaceName.setText(model.getName());
         addSlotButton = dialog.getAddSlotButton();
         renameSlotButton = dialog.getRenameSlotButton();
+        tfDesc = dialog.getTfDesc();
+        tfDesc.setText(model.getDesc());
     }
 
     private void initListener() {
@@ -66,11 +69,12 @@ public class AddSlotInterfaceController {
                 model.setName(tfInterfaceName.getText());
                 ComboBoxItem item = (ComboBoxItem) cbDeviceSlots.getSelectedItem();
                 model.setSelectedDeviceSlotId(Integer.parseInt(item.getKey()));
+                model.setDesc(tfDesc.getText());
                 try {
                     if (model.isAddInterface()) {
-                        storageRepo.addSlotInterface(model.getSelectedDeviceSlotId(), model.getName(), null);
+                        storageRepo.addSlotInterface(model.getSelectedDeviceSlotId(), model.getName(), model.getDesc(), null);
                     } else {
-                        storageRepo.updateSlotInterface(model.getModifyInterfaceId(), model.getSelectedDeviceSlotId(), model.getName(), model.getInterfaceLinkId());
+                        storageRepo.updateSlotInterface(model.getModifyInterfaceId(), model.getSelectedDeviceSlotId(), model.getName(), model.getDesc(), model.getInterfaceLinkId());
                     }
                 } catch (SQLException e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);

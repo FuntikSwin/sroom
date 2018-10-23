@@ -8,6 +8,7 @@ public class AddSlotInterfaceModel {
 
     private List<DeviceSlot> deviceSlots;
     private String name;
+    private String Desc;
     private int selectedDeviceId;
     private int selectedDeviceSlotId;
     private boolean addInterface;
@@ -32,6 +33,14 @@ public class AddSlotInterfaceModel {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getDesc() {
+        return Desc;
+    }
+
+    public void setDesc(String desc) {
+        Desc = desc;
     }
 
     public int getSelectedDeviceId() {

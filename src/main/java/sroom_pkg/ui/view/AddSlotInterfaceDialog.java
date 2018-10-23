@@ -11,6 +11,7 @@ public class AddSlotInterfaceDialog extends JDialog {
     private JComboBox cbDeviceSlots;
     private JButton addSlotButton;
     private JButton renameSlotButton;
+    private JTextField tfDesc;
 
     public AddSlotInterfaceDialog() {
         setContentPane(contentPane);
@@ -74,5 +75,13 @@ public class AddSlotInterfaceDialog extends JDialog {
 
     public JButton getRenameSlotButton() {
         return renameSlotButton;
+    }
+
+    public JTextField getTfDesc() {
+        return tfDesc;
+    }
+
+    public void setTfDesc(JTextField tfDesc) {
+        this.tfDesc = tfDesc;
     }
 }

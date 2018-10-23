@@ -143,6 +143,7 @@ public class MainFrameController {
                     dlgModel.setModifyInterfaceId(slotInterface.getId());
                     dlgModel.setInterfaceLinkId(slotInterface.getLinkId());
                     dlgModel.setName(slotInterface.getName());
+                    dlgModel.setDesc(slotInterface.getDesc());
                     dlgModel.setSelectedDeviceSlotId(slotInterface.getSlotId());
                     dlgModel.setSelectedDeviceId(slotInterface.getDeviceSlot().getDeviceId());
 
@@ -190,6 +191,7 @@ public class MainFrameController {
                     int deviceId = getSelectedDeviceId();
                     dlgModel.setDeviceSlots(storageRepo.getDeviceSlots(deviceId));
                     dlgModel.setName("");
+                    dlgModel.setDesc("");
                     dlgModel.setSelectedDeviceId(deviceId);
                 } catch (Exception e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
@@ -363,17 +365,28 @@ public class MainFrameController {
         List<SlotInterface> data = new ArrayList<>();
         try {
             data = storageRepo.getSlotInterfaces(getSelectedDeviceId(), 0);
+            data = storageRepo.getFillLinkedSlotInterfaces(data);
         } catch (Exception e) {
             e.printStackTrace();
             return;
         }
 
         for (SlotInterface item : data) {
-            String linkId = "";
+            //String linkId = "";
+            String linkInfo = "";
             if (item.getLinkId() != null && item.getLinkId() > 0) {
-                linkId = Integer.toString(item.getLinkId());
+                //linkId = Integer.toString(item.getLinkId());
+                if (item.getLinkSlotInterface() != null) {
+                    SlotInterface target = item.getLinkSlotInterface();
+                    linkInfo =
+                            target.getInterfaceType().getName() + ": " +
+                                    "[" + target.getDeviceSlot().getDevice().getServerBox().getName() + "] " +
+                                    + target.getDeviceSlot().getDevice().getNum() + ". "
+                                    + target.getDeviceSlot().getName() + " -> "
+                                    + target.getName();
+                }
             }
-            tableModel.addRow(new Object[]{item.getId(), item.getDeviceSlot().getName(), item.getName(), linkId});
+            tableModel.addRow(new Object[]{item.getId(), item.getDeviceSlot().getName(), item.getName()/*, linkId*/, linkInfo, item.getDesc()});
         }
     }
 

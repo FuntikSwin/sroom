@@ -253,7 +253,7 @@ public class DbStorageRepo implements IStorageRepo {
         }
 
         if (deviceId > 0 || slotInterfaceId > 0) {
-            String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName, l.InterfaceTypeId, it.Name InterfaceTypeName " +
+            String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, i.Desc, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName, l.InterfaceTypeId, it.Name InterfaceTypeName " +
                     "from SlotInterface i " +
                     "left join DeviceSlot s ON s.Id = i.SlotId " +
                     "left join Device d ON d.Id = s.DeviceId " +
@@ -269,7 +269,8 @@ public class DbStorageRepo implements IStorageRepo {
                             resultSet.getInt("Id")
                             , resultSet.getInt("SlotId")
                             , resultSet.getString("Name")
-                            , resultSet.getInt("LinkId"));
+                            , resultSet.getInt("LinkId")
+                    , resultSet.getString("Desc"));
                     if (item.getSlotId() != null) {
                         DeviceSlot itemSlot = new DeviceSlot(
                                 item.getSlotId()
@@ -331,7 +332,7 @@ public class DbStorageRepo implements IStorageRepo {
         closeConnection();
     }
 
-    public void addSlotInterface(int deviceSlotId, String name, Integer linkId) throws SQLException {
+    public void addSlotInterface(int deviceSlotId, String name, String desc, Integer linkId) throws SQLException {
         try {
             openConnection();
         } catch (ClassNotFoundException e) {
@@ -342,7 +343,7 @@ public class DbStorageRepo implements IStorageRepo {
             return;
         }
 
-        String sql = "insert into SlotInterface(SlotId, Name, LinkId) values(?, ?, ?)";
+        String sql = "insert into SlotInterface(SlotId, Name, LinkId, Desc) values(?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, deviceSlotId);
             pstmt.setString(2, name);
@@ -351,6 +352,7 @@ public class DbStorageRepo implements IStorageRepo {
             } else {
                 pstmt.setInt(3, linkId);
             }
+            pstmt.setString(4, desc);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -360,7 +362,7 @@ public class DbStorageRepo implements IStorageRepo {
     }
 
     @Override
-    public void updateSlotInterface(int slotInterfaceId, int deiceSlotId, String name, Integer linkId) throws SQLException {
+    public void updateSlotInterface(int slotInterfaceId, int deiceSlotId, String name, String desc, Integer linkId) throws SQLException {
         try {
             openConnection();
         } catch (ClassNotFoundException e) {
@@ -375,12 +377,18 @@ public class DbStorageRepo implements IStorageRepo {
                 "set SlotId = ? " +
                 ", 'Name' = ? " +
                 ", LinkId = ? " +
+                ", Desc = ? " +
                 "where Id = ?";
         try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
             pstmt.setInt(1, deiceSlotId);
             pstmt.setString(2, name);
-            pstmt.setInt(3, linkId);
-            pstmt.setInt(4, slotInterfaceId);
+            if (linkId != null && linkId > 0) {
+                pstmt.setInt(3, linkId);
+            } else {
+                pstmt.setNull(3, Types.INTEGER);
+            }
+            pstmt.setString(4, desc);
+            pstmt.setInt(5, slotInterfaceId);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -526,6 +534,21 @@ public class DbStorageRepo implements IStorageRepo {
         }
 
         return targetSlotINterface;
+    }
+
+    @Override
+    public List<SlotInterface> getFillLinkedSlotInterfaces(List<SlotInterface> sources) throws SQLException {
+
+        List<SlotInterface> result = new ArrayList<>();
+        for (SlotInterface item: sources) {
+            SlotInterface resItem = item;
+            if (resItem.getLinkId() != null && resItem.getLinkId() > 0) {
+                resItem.setLinkSlotInterface(getSlotInterfaceByLink(resItem.getLinkId(), resItem.getId()));
+            }
+            result.add(resItem);
+        }
+
+        return result;
     }
 
     @Override
