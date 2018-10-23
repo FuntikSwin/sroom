@@ -4,13 +4,13 @@ public class Device extends ComboBoxItem {
 
     private int id;
     private String name;
-    private int num;
+    private Integer num;
     private int size;
     private Integer serverBoxId;
     private String desc;
     private ServerBox serverBox;
 
-    public Device(int id, String name, int num, int size, Integer serverBoxId, String desc) {
+    public Device(int id, String name, Integer num, int size, Integer serverBoxId, String desc) {
         this.id = id;
         this.name = name;
         this.num = num;
@@ -35,11 +35,11 @@ public class Device extends ComboBoxItem {
         this.name = name;
     }
 
-    public int getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 

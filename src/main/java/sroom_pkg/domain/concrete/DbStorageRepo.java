@@ -161,7 +161,7 @@ public class DbStorageRepo implements IStorageRepo {
     }
 
     @Override
-    public void addDevice(String name, int num, int size, int serverBoxId, String desc) throws SQLException {
+    public void addDevice(String name, Integer num, int size, int serverBoxId, String desc) throws SQLException {
         try {
             openConnection();
         } catch (ClassNotFoundException e) {
@@ -176,7 +176,11 @@ public class DbStorageRepo implements IStorageRepo {
         String sql = "insert into Device(Name, Num, 'Size', ServerBoxId, Desc) values(?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, name);
-            pstmt.setInt(2, num);
+            if (num != null) {
+                pstmt.setInt(2, num);
+            } else {
+                pstmt.setNull(2, Types.INTEGER);
+            }
             pstmt.setInt(3, size);
             pstmt.setInt(4, serverBoxId);
             pstmt.setString(5, desc);
@@ -204,7 +208,7 @@ public class DbStorageRepo implements IStorageRepo {
     }
 
     @Override
-    public void updateDevice(int deviceId, String name, int num, int size, int serverBoxId, String desc) throws SQLException {
+    public void updateDevice(int deviceId, String name, Integer num, int size, int serverBoxId, String desc) throws SQLException {
         try {
             openConnection();
         } catch (ClassNotFoundException e) {

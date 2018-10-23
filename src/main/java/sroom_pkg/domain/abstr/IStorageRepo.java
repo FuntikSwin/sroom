@@ -12,8 +12,8 @@ public interface IStorageRepo {
 
     List<Device> getDevices(int serverBoxId, int deviceId) throws SQLException;
     void removeDevice(int deviceId) throws SQLException;
-    void addDevice(String name, int num, int size, int serverBoxId, String desc) throws SQLException;
-    void updateDevice(int deviceId, String name, int num, int size, int serverBoxId, String desc) throws SQLException;
+    void addDevice(String name, Integer num, int size, int serverBoxId, String desc) throws SQLException;
+    void updateDevice(int deviceId, String name, Integer num, int size, int serverBoxId, String desc) throws SQLException;
 
     List<SlotInterface> getSlotInterfaces(int deviceId, int slotInterfaceId) throws SQLException;
     void removeSlotInterface(int slotInterfaceId) throws SQLException;

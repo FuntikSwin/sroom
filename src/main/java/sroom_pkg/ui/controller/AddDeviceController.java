@@ -11,6 +11,8 @@ import sroom_pkg.ui.view.MainFrame;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.sql.SQLException;
 
 public class AddDeviceController {
@@ -29,6 +31,7 @@ public class AddDeviceController {
     private JButton buttonCancel;
     private JButton buttonOK;
     private JTextField tfDesc;
+    private JCheckBox noNumCheckBox;
 
     public AddDeviceController(MainFrame parent, AddDeviceModel model) {
         this.parent = parent;
@@ -50,7 +53,7 @@ public class AddDeviceController {
         tfDeviceName.setText(model.getName());
 
         spDeviceNum = dialog.getSpDeviceNum();
-        spDeviceNum.setValue(model.getNum());
+        spDeviceNum.setValue(model.getNum() != null && model.getNum() > 0 ? model.getNum() : 1);
 
         spDeviceSize = dialog.getSpDeviceSize();
         spDeviceSize.setValue(model.getSize());
@@ -65,6 +68,12 @@ public class AddDeviceController {
 
         tfDesc = dialog.getTfDesc();
         tfDesc.setText(model.getDesc());
+
+        noNumCheckBox = dialog.getNoNumCheckBox();
+        if (model.getNum() == null || model.getNum() == 0) {
+            noNumCheckBox.setSelected(true);
+            spDeviceNum.setEnabled(false);
+        }
     }
 
     private void initListener() {
@@ -74,6 +83,17 @@ public class AddDeviceController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
+            }
+        });
+
+        noNumCheckBox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e) {
+                if (e.getStateChange() == ItemEvent.SELECTED) {
+                    spDeviceNum.setEnabled(false);
+                } else {
+                    spDeviceNum.setEnabled(true);
+                }
             }
         });
 
@@ -96,20 +116,25 @@ public class AddDeviceController {
             @Override
             public void actionPerformed(ActionEvent e) {
                 dialog.dispose();
+                Integer deviceNum = (Integer) spDeviceNum.getValue();
+                if (noNumCheckBox.isSelected()) {
+                    deviceNum = null;
+                }
+
                 try {
                     if (model.isAddDevice()) {
                         storageRepo.addDevice(
                                 tfDeviceName.getText()
-                                //, ((Double) spDeviceNum.getValue()).intValue()
-                                , (int) spDeviceNum.getValue()
-                                //, ((Double) spDeviceSize.getValue()).intValue()
+                                //, (int) spDeviceNum.getValue()
+                                , deviceNum
                                 , (int) spDeviceSize.getValue()
                                 , getSelectedServerBoxId()
                                 , tfDesc.getText());
                     } else {
                         storageRepo.updateDevice(model.getModifyDeviceId()
                                 , tfDeviceName.getText()
-                                , (int) spDeviceNum.getValue()
+                                //, (int) spDeviceNum.getValue()
+                                , deviceNum
                                 , (int) spDeviceSize.getValue()
                                 , getSelectedServerBoxId()
                                 , tfDesc.getText());

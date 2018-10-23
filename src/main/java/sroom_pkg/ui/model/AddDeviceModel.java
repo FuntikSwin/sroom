@@ -8,7 +8,7 @@ public class AddDeviceModel {
 
     private String name;
     private String desc;
-    private int num;
+    private Integer num;
     private int size;
     private List<ServerBox> serverBoxes;
     private int selectedServerBoxId;
@@ -35,11 +35,11 @@ public class AddDeviceModel {
         this.desc = desc;
     }
 
-    public int getNum() {
+    public Integer getNum() {
         return num;
     }
 
-    public void setNum(int num) {
+    public void setNum(Integer num) {
         this.num = num;
     }
 

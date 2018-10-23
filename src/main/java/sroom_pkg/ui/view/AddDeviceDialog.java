@@ -13,6 +13,7 @@ public class AddDeviceDialog extends JDialog {
     private JComboBox cbServerBoxes;
     private JButton addServerBoxButton;
     private JTextField tfDesc;
+    private JCheckBox noNumCheckBox;
 
     public AddDeviceDialog() {
         setContentPane(contentPane);
@@ -94,5 +95,13 @@ public class AddDeviceDialog extends JDialog {
 
     public JTextField getTfDesc() {
         return tfDesc;
+    }
+
+    public JCheckBox getNoNumCheckBox() {
+        return noNumCheckBox;
+    }
+
+    public void setNoNumCheckBox(JCheckBox noNumCheckBox) {
+        this.noNumCheckBox = noNumCheckBox;
     }
 }

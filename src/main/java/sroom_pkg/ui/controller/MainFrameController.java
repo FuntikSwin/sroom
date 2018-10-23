@@ -341,7 +341,11 @@ public class MainFrameController {
         }
 
         for (Device item : data) {
-            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), Integer.toString(item.getNum()), item.getName(), item.getDesc()});
+            String deviceNumStr = "";
+            if (item.getNum() != null && item.getNum() > 0) {
+                deviceNumStr = Integer.toString(item.getNum());
+            }
+            tableModel.addRow(new Object[]{item.getId(), item.getServerBox().getName(), deviceNumStr, item.getName(), item.getDesc()});
         }
 
         tableModel = (DefaultTableModel) tblInterfaces.getModel();
