@@ -40,7 +40,7 @@ public class MainFrameController {
 
     public void show() {
         mainFrame.pack();
-        mainFrame.setSize(500, 500);
+        mainFrame.setSize(1000, 600);
         //mainFrame.setLocationByPlatform(true);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
