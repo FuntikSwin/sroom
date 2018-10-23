@@ -567,4 +567,38 @@ public class DbStorageRepo implements IStorageRepo {
 
         closeConnection();
     }
+
+    @Override
+    public void updateLink(int linkId, int interfaceTypeId, int sourceSlotInterfaceId, int targetSlotInterfaceId) throws SQLException {
+        try {
+            openConnection();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        String sql = "update Link set InterfaceTypeId = ? where Id = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, interfaceTypeId);
+            pstmt.setInt(2, linkId);
+            pstmt.executeUpdate();
+        }
+        sql = "update SlotInterface set LinkId = null where LinkId = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, linkId);
+            pstmt.executeUpdate();
+        }
+        sql = "update SlotInterface set LinkId = ? where Id in (?, ?)";
+        try (PreparedStatement pstmt = connection.prepareStatement(sql)) {
+            pstmt.setInt(1, linkId);
+            pstmt.setInt(2, sourceSlotInterfaceId);
+            pstmt.setInt(3, targetSlotInterfaceId);
+            pstmt.executeUpdate();
+        }
+
+        closeConnection();
+    }
 }

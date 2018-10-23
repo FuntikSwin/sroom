@@ -28,4 +28,5 @@ public interface IStorageRepo {
 
     SlotInterface getSlotInterfaceByLink(int linkId, int sourceSlotInterfaceId) throws SQLException;
     void addLink(int sourceSlotInterfaceId, int targetInterfaceId, int interfaceTypeId) throws SQLException;
+    void updateLink(int linkId, int interfaceTypeId, int sourceSlotInterfaceId, int targetSlotInterfaceId) throws SQLException;
 }

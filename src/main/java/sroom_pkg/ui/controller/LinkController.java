@@ -8,6 +8,7 @@ import sroom_pkg.ui.view.LinkDialog;
 import sroom_pkg.ui.view.MainFrame;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -216,19 +217,39 @@ public class LinkController {
         buttonOK.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String targetIdStr = ((ComboBoxItem) cbSlotInterfaces.getSelectedItem()).getKey();
+                String intTypeIdStr = ((ComboBoxItem) cbInterfaceType.getSelectedItem()).getKey();
+
+                List<SlotInterface> slotInterfaces = new ArrayList<>();
+                try {
+                    slotInterfaces = storageRepo.getSlotInterfaces(0, Integer.parseInt(targetIdStr));
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (slotInterfaces.size() != 1) {
+                    JOptionPane.showMessageDialog(null, "Ошибка системы", "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+                if (slotInterfaces.get(0).getLinkId() > 0 && model.getSlotInterface().getLinkId() != slotInterfaces.get(0).getLinkId()) {
+                    JOptionPane.showMessageDialog(null, "У выбранного интерфейса уже есть связь!", "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
                 dialog.dispose();
                 if (cbSlotInterfaces.getSelectedItem() == null) {
                     return;
                 }
-                String targetIdStr = ((ComboBoxItem) cbSlotInterfaces.getSelectedItem()).getKey();
-                String intTypeIdStr = ((ComboBoxItem) cbInterfaceType.getSelectedItem()).getKey();
 
                 try {
                     if (model.getTargetSlotInterface() == null) {
                         storageRepo.addLink(model.getSlotInterface().getId(), Integer.parseInt(targetIdStr), Integer.parseInt(intTypeIdStr));
                     } else {
-                        JOptionPane.showMessageDialog(null, "Не реализовано!!!");
-                        return;
+                        storageRepo.updateLink(
+                                model.getSlotInterface().getLinkId()
+                                , Integer.parseInt(intTypeIdStr)
+                                , model.getSlotInterface().getId()
+                                , Integer.parseInt(targetIdStr));
                     }
                 } catch (SQLException e1) {
                     e1.printStackTrace();
