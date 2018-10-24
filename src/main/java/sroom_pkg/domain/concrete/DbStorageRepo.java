@@ -262,7 +262,8 @@ public class DbStorageRepo implements IStorageRepo {
                     "left join Link l ON l.Id = i.LinkId " +
                     "left join InterfaceType it on it.Id = l.InterfaceTypeId " +
                     "where s.DeviceId = case when " + Integer.toString(deviceId) + " = 0 then s.DeviceId else " + Integer.toString(deviceId) + " end " +
-                    "and i.Id = case when " + Integer.toString(slotInterfaceId) + " = 0 then i.Id else " + Integer.toString(slotInterfaceId) + " end";
+                    "and i.Id = case when " + Integer.toString(slotInterfaceId) + " = 0 then i.Id else " + Integer.toString(slotInterfaceId) + " end " +
+                    "order by i.Name";
             try (Statement stmt = connection.createStatement();
                  ResultSet resultSet = stmt.executeQuery(sql)) {
                 while (resultSet.next()) {
