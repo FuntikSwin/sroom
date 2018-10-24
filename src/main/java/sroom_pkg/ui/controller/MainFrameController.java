@@ -6,7 +6,6 @@ import sroom_pkg.domain.model.*;
 import sroom_pkg.ui.model.AddDeviceModel;
 import sroom_pkg.ui.model.AddSlotInterfaceModel;
 import sroom_pkg.ui.model.LinkModel;
-import sroom_pkg.ui.view.LinkDialog;
 import sroom_pkg.ui.view.MainFrame;
 
 import javax.swing.*;
@@ -18,7 +17,7 @@ import java.util.List;
 
 public class MainFrameController {
 
-    private final IStorageRepo storageRepo = new DbStorageRepo();
+    private final IStorageRepo storageRepo;
 
     private MainFrame mainFrame;
     private JComboBox cbServerBoxes;
@@ -31,6 +30,7 @@ public class MainFrameController {
     private JButton linkButton;
 
     public MainFrameController() {
+        storageRepo = new DbStorageRepo();
         initComponent();
         initListeners();
     }
