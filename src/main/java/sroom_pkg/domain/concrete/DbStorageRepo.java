@@ -313,41 +313,38 @@ public class DbStorageRepo implements IStorageRepo {
             }
         }
 
-        Collections.sort(data, new Comparator<SlotInterface>() {
-            @Override
-            public int compare(SlotInterface o1, SlotInterface o2) {
-                String x1 = o1.getDeviceSlot().getName();
-                String x2 = o2.getDeviceSlot().getName();
-                int sComp = x1.compareTo(x2);
+        Collections.sort(data, (o1, o2) -> {
+            String x1 = o1.getDeviceSlot().getName();
+            String x2 = o2.getDeviceSlot().getName();
+            int sComp = x1.compareTo(x2);
 
-                if (sComp != 0) {
-                    return sComp;
-                }
-
-                int i1 = 0;
-                int i2 = 0;
-
-                String str = "";
-                Pattern p = Pattern.compile("-?\\d+");
-                Matcher m = p.matcher(o1.getName());
-                while (m.find()) {
-                    str = str + m.group();
-                }
-                if (str != "") {
-                    i1 = Integer.parseInt(str);
-                }
-
-                str = "";
-                m = p.matcher(o2.getName());
-                while (m.find()) {
-                    str = str + m.group();
-                }
-                if (str != "") {
-                    i2 = Integer.parseInt(str);
-                }
-
-                return i1-i2;
+            if (sComp != 0) {
+                return sComp;
             }
+
+            int i1 = 0;
+            int i2 = 0;
+
+            String str = "";
+            Pattern p = Pattern.compile("-?\\d+");
+            Matcher m = p.matcher(o1.getName());
+            while (m.find()) {
+                str = str + m.group();
+            }
+            if (str != "") {
+                i1 = Integer.parseInt(str);
+            }
+
+            str = "";
+            m = p.matcher(o2.getName());
+            while (m.find()) {
+                str = str + m.group();
+            }
+            if (str != "") {
+                i2 = Integer.parseInt(str);
+            }
+
+            return i1-i2;
         });
 
         closeConnection();
