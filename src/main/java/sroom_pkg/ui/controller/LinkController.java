@@ -67,6 +67,9 @@ public class LinkController {
         cbDeviceSlots = dialog.getCbDeviceSlots();
         cbSlotInterfaces = dialog.getCbSlotInterfaces();
         updateServerBoxes();
+        updateDevices();
+        updateDeviceSlots();
+        updateSlotInterfaces();
 
         cbInterfaceType = dialog.getCbInterfaceType();
         cbInterfaceType.removeAllItems();
@@ -109,7 +112,7 @@ public class LinkController {
                 }
             }
         }
-        updateDevices();
+        //updateDevices();
     }
 
     private void updateDevices() {
@@ -132,7 +135,7 @@ public class LinkController {
                 cbDevices.setSelectedItem(item);
             }
         }
-        updateDeviceSlots();
+        //updateDeviceSlots();
     }
 
     private void updateDeviceSlots() {
@@ -155,14 +158,16 @@ public class LinkController {
                 cbDeviceSlots.setSelectedItem(item);
             }
         }
-        updateSlotInterfaces();
+        //updateSlotInterfaces();
     }
 
     private void updateSlotInterfaces() {
         cbSlotInterfaces.removeAllItems();
         List<SlotInterface> slotInterfaces = new ArrayList<>();
+        Integer slotDeviceId = null;
         try {
             Integer deviceId = getSelectedDeviceId();
+            slotDeviceId = getSelectedDeviceSlotId();
             if (deviceId == null) {
                 return;
             }
@@ -171,8 +176,13 @@ public class LinkController {
             e.printStackTrace();
         }
 
+        if (slotDeviceId == null) {
+            return;
+        }
+
         for (SlotInterface item: slotInterfaces) {
-            if (item.getSlotId() != getSelectedDeviceSlotId()) {
+            Integer currSlotId = item.getSlotId();
+            if ((int) currSlotId != (int) slotDeviceId) {
                 continue;
             }
             cbSlotInterfaces.addItem(item);
