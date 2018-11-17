@@ -15,13 +15,16 @@ import java.util.regex.Pattern;
 public class DbStorageRepo implements IStorageRepo {
 
     private final String driverName = "org.sqlite.JDBC";
-    private final String connStr;
+    private String connStr;
     private Connection connection;
+
+    private String fileDbName = "";
 
     public DbStorageRepo() {
         connection = null;
         ClassLoader classLoader = getClass().getClassLoader();
         File file = new File(classLoader.getResource("sroom_db").getFile());
+        fileDbName = file.getName();
         connStr = "jdbc:sqlite:" + file.getAbsolutePath();
         //connStr = "jdbc:sqlite:/home/fomakin/Projects/SqLiteDB/sroom_db";
     }
@@ -35,6 +38,17 @@ public class DbStorageRepo implements IStorageRepo {
 
     private void closeConnection() throws SQLException {
         connection.close();
+    }
+
+    @Override
+    public String getDbFileName() {
+        return fileDbName;
+    }
+
+    @Override
+    public void setDb(File fileDb) {
+        fileDbName = fileDb.getName();
+        connStr = "jdbc:sqlite:" + fileDb.getAbsolutePath();
     }
 
     public List<ServerBox> getServerBoxes() throws SQLException {

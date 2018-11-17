@@ -2,10 +2,14 @@ package sroom_pkg.domain.abstr;
 
 import sroom_pkg.domain.model.*;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.List;
 
 public interface IStorageRepo {
+
+    String getDbFileName();
+    void setDb(File fileDb);
 
     List<ServerBox> getServerBoxes() throws SQLException;
     void addServerBox(String name) throws SQLException;

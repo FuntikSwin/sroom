@@ -13,6 +13,7 @@ import sroom_pkg.ui.view.MainFrame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.io.File;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,11 +36,13 @@ public class MainFrameController {
     private JButton linkButton;
 
     private JMenuItem menuItemReportGeneral;
+    private JMenuItem menuItemChangeDb;
 
     public MainFrameController() {
         storageRepo = new DbStorageRepo();
         reportRepo = new ExcelReportRepo();
         initComponent();
+        initDataComponent();
         initListeners();
     }
 
@@ -52,8 +55,34 @@ public class MainFrameController {
 
     private void initComponent() {
         mainFrame = new MainFrame();
+        mainFrame.setTitle("Server room (" + storageRepo.getDbFileName() + ")");
 
         cbServerBoxes = mainFrame.getCbServerBoxes();
+        /*cbServerBoxes.addItem(new ServerBox(0, "Все"));
+        try {
+            List<ServerBox> serverBoxes = storageRepo.getServerBoxes();
+            for (ServerBox item : serverBoxes) {
+                cbServerBoxes.addItem(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }*/
+
+        tblDevices = mainFrame.getTblDevices();
+        tblInterfaces = mainFrame.getTblInterfaces();
+        //updateDevicesTable();
+
+        removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
+        addInterfaceButton = mainFrame.getAddInterfaceButton();
+        removeDeviceButton = mainFrame.getRemoveDeviceButton();
+        addDeviceButton = mainFrame.getAddDeviceButton();
+        linkButton = mainFrame.getLinkButton();
+
+        menuItemReportGeneral = mainFrame.getMenuItemReportGeneral();
+        menuItemChangeDb = mainFrame.getMenuItemChangeDb();
+    }
+
+    private void initDataComponent() {
         cbServerBoxes.addItem(new ServerBox(0, "Все"));
         try {
             List<ServerBox> serverBoxes = storageRepo.getServerBoxes();
@@ -64,17 +93,7 @@ public class MainFrameController {
             e.printStackTrace();
         }
 
-        tblDevices = mainFrame.getTblDevices();
-        tblInterfaces = mainFrame.getTblInterfaces();
         updateDevicesTable();
-
-        removeInterfaceButton = mainFrame.getRemoveInterfaceButton();
-        addInterfaceButton = mainFrame.getAddInterfaceButton();
-        removeDeviceButton = mainFrame.getRemoveDeviceButton();
-        addDeviceButton = mainFrame.getAddDeviceButton();
-        linkButton = mainFrame.getLinkButton();
-
-        menuItemReportGeneral = mainFrame.getMenuItemReportGeneral();
     }
 
     private void initListeners() {
@@ -339,6 +358,22 @@ public class MainFrameController {
                 } catch (IOException e1) {
                     JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
                     return;
+                }
+            }
+        });
+
+        menuItemChangeDb.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                File defaultDir = new File(getClass().getClassLoader().getResource("").getFile());
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(defaultDir);
+                int ret = fileChooser.showDialog(null, "Выбрать БД");
+                if (ret == JFileChooser.APPROVE_OPTION) {
+                    File fileDb = fileChooser.getSelectedFile();
+                    storageRepo.setDb(fileDb);
+                    mainFrame.setTitle("Server room (" + storageRepo.getDbFileName() + ")");
+                    initDataComponent();
                 }
             }
         });

@@ -15,8 +15,9 @@ public class MainFrame extends JFrame {
     private JButton linkButton;
 
     private JMenuBar menuBar;
-    private JMenu menuReport;
+    private JMenu menu;
     private JMenuItem menuItemReportGeneral;
+    private JMenuItem menuItemChangeDb;
 
     public MainFrame() {
         //pack();
@@ -56,11 +57,17 @@ public class MainFrame extends JFrame {
         tblInterfaces.removeColumn(tblInterfaces.getColumnModel().getColumn(0));
 
         menuBar = new JMenuBar();
-        menuReport = new JMenu("Reports");
-        menuBar.add(menuReport);
 
+        menu = new JMenu("Reports");
+        menuBar.add(menu);
         menuItemReportGeneral = new JMenuItem("General");
-        menuReport.add(menuItemReportGeneral);
+        menu.add(menuItemReportGeneral);
+
+        menu = new JMenu("Setting");
+        menuBar.add(menu);
+        menuItemChangeDb = new JMenuItem("Change Database");
+        menu.add(menuItemChangeDb);
+
 
         setJMenuBar(menuBar);
 
@@ -102,5 +109,9 @@ public class MainFrame extends JFrame {
 
     public JMenuItem getMenuItemReportGeneral() {
         return menuItemReportGeneral;
+    }
+
+    public JMenuItem getMenuItemChangeDb() {
+        return menuItemChangeDb;
     }
 }
