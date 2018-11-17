@@ -29,6 +29,8 @@ public class MainFrameController {
     private JButton addDeviceButton;
     private JButton linkButton;
 
+    private JMenuItem menuItemReportGeneral;
+
     public MainFrameController() {
         storageRepo = new DbStorageRepo();
         initComponent();
@@ -65,6 +67,8 @@ public class MainFrameController {
         removeDeviceButton = mainFrame.getRemoveDeviceButton();
         addDeviceButton = mainFrame.getAddDeviceButton();
         linkButton = mainFrame.getLinkButton();
+
+        menuItemReportGeneral = mainFrame.getMenuItemReportGeneral();
     }
 
     private void initListeners() {
@@ -297,6 +301,13 @@ public class MainFrameController {
                     }
                 });
                 dlgController.show();
+            }
+        });
+
+        menuItemReportGeneral.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(null, "Test", "Test message", JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }

@@ -14,6 +14,10 @@ public class MainFrame extends JFrame {
     private JButton removeInterfaceButton;
     private JButton linkButton;
 
+    private JMenuBar menuBar;
+    private JMenu menuReport;
+    private JMenuItem menuItemReportGeneral;
+
     public MainFrame() {
         //pack();
         setContentPane(mainPanel);
@@ -51,6 +55,15 @@ public class MainFrame extends JFrame {
         tblInterfaces.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         tblInterfaces.removeColumn(tblInterfaces.getColumnModel().getColumn(0));
 
+        menuBar = new JMenuBar();
+        menuReport = new JMenu("Reports");
+        menuBar.add(menuReport);
+
+        menuItemReportGeneral = new JMenuItem("General");
+        menuReport.add(menuItemReportGeneral);
+
+        setJMenuBar(menuBar);
+
         setLocationRelativeTo(null);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     }
@@ -85,5 +98,9 @@ public class MainFrame extends JFrame {
 
     public JButton getLinkButton() {
         return linkButton;
+    }
+
+    public JMenuItem getMenuItemReportGeneral() {
+        return menuItemReportGeneral;
     }
 }
