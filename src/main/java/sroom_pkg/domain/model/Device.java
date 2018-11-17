@@ -1,5 +1,7 @@
 package sroom_pkg.domain.model;
 
+import java.util.Objects;
+
 public class Device extends ComboBoxItem {
 
     private int id;
@@ -88,5 +90,18 @@ public class Device extends ComboBoxItem {
     @Override
     public String toString() {
         return Integer.toString(num) + ": " + name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Device device = (Device) o;
+        return id == device.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

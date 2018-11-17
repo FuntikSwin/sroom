@@ -1,7 +1,9 @@
 package sroom_pkg.ui.controller;
 
+import sroom_pkg.domain.abstr.IReportRepo;
 import sroom_pkg.domain.abstr.IStorageRepo;
 import sroom_pkg.domain.concrete.DbStorageRepo;
+import sroom_pkg.domain.concrete.ExcelReportRepo;
 import sroom_pkg.domain.model.*;
 import sroom_pkg.ui.model.AddDeviceModel;
 import sroom_pkg.ui.model.AddSlotInterfaceModel;
@@ -11,13 +13,16 @@ import sroom_pkg.ui.view.MainFrame;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MainFrameController {
 
     private final IStorageRepo storageRepo;
+    private final IReportRepo reportRepo;
 
     private MainFrame mainFrame;
     private JComboBox cbServerBoxes;
@@ -33,6 +38,7 @@ public class MainFrameController {
 
     public MainFrameController() {
         storageRepo = new DbStorageRepo();
+        reportRepo = new ExcelReportRepo();
         initComponent();
         initListeners();
     }
@@ -307,7 +313,33 @@ public class MainFrameController {
         menuItemReportGeneral.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Test", "Test message", JOptionPane.INFORMATION_MESSAGE);
+                //JOptionPane.showMessageDialog(null, "Test", "Test message", JOptionPane.INFORMATION_MESSAGE);
+                List<SlotInterface> slotInterfaces;
+                try {
+                    slotInterfaces = storageRepo.getSlotInterfaces(0, 0);
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                if (slotInterfaces.size() == 0) {
+                    JOptionPane.showMessageDialog(null, "Нет данных для отчета", "Внимание!", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    slotInterfaces = storageRepo.getFillLinkedSlotInterfaces(slotInterfaces);
+                } catch (SQLException e1) {
+                    JOptionPane.showMessageDialog(null, "Нет данных для отчета", "Внимание!", JOptionPane.WARNING_MESSAGE);
+                    return;
+                }
+
+                try {
+                    reportRepo.generalReport(slotInterfaces);
+                } catch (IOException e1) {
+                    JOptionPane.showMessageDialog(null, e1.getMessage(), "Внимание!", JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
             }
         });
     }

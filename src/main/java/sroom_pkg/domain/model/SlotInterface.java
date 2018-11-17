@@ -84,6 +84,20 @@ public class SlotInterface extends ComboBoxItem {
         this.linkSlotInterface = linkSlotInterface;
     }
 
+    public String getLinkSlotInterfacePath() {
+        if (linkSlotInterface == null) {
+            return "";
+        }
+
+        return "[" + interfaceType.getName() + "] "
+                + linkSlotInterface.getDeviceSlot().getDevice().getServerBox().getName() + ". "
+                + "[" + linkSlotInterface.getDeviceSlot().getDevice().getNum() + "] "
+                + linkSlotInterface.getDeviceSlot().getDevice().getName() + " "
+                + "(" + linkSlotInterface.getDeviceSlot().getDevice().getDesc() + ") "
+                + "Слот: " + linkSlotInterface.getDeviceSlot().getName() + ", "
+                + "Интерфейс: " + linkSlotInterface.getName();
+    }
+
     @Override
     public String getKey() {
         return Integer.toString(id);

@@ -257,8 +257,8 @@ public class DbStorageRepo implements IStorageRepo {
             return null;
         }
 
-        if (deviceId > 0 || slotInterfaceId > 0) {
-            String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, i.Desc, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.ServerBoxId, sb.Name ServerBoxName, l.InterfaceTypeId, it.Name InterfaceTypeName " +
+        //if (deviceId > 0 || slotInterfaceId > 0) {
+            String sql = "select i.Id, i.SlotId, i.Name, i.LinkId, i.Desc, s.Name SlotName, s.DeviceId, d.Name DeviceName, d.Num DeviceNum, d.Desc DeviceDesc, d.ServerBoxId, sb.Name ServerBoxName, l.InterfaceTypeId, it.Name InterfaceTypeName " +
                     "from SlotInterface i " +
                     "left join DeviceSlot s ON s.Id = i.SlotId " +
                     "left join Device d ON d.Id = s.DeviceId " +
@@ -289,7 +289,7 @@ public class DbStorageRepo implements IStorageRepo {
                                     , resultSet.getInt("DeviceNum")
                                     , 0
                                     , resultSet.getInt("ServerBoxId")
-                                    , "");
+                                    , resultSet.getString("DeviceDesc"));
                             if (itemDevice.getServerBoxId() != null) {
                                 ServerBox itemBox = new ServerBox(
                                         itemDevice.getServerBoxId()
@@ -311,7 +311,7 @@ public class DbStorageRepo implements IStorageRepo {
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
+        //}
 
         Collections.sort(data, (o1, o2) -> {
             String x1 = o1.getDeviceSlot().getName();
