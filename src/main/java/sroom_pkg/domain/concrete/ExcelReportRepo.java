@@ -229,7 +229,7 @@ public class ExcelReportRepo implements IReportRepo {
         sheet2.autoSizeColumn(1);
         sheet2.autoSizeColumn(3);
 
-        try (FileOutputStream out = new FileOutputStream(new File("/home/fomakin/Projects/Idea/sroom_reports/general.xls"))) {
+        try (FileOutputStream out = new FileOutputStream(new File("/home/fomakin/Projects/idea/sroom_reports/general.xls"))) {
             workbook.write(out);
         }
     }
